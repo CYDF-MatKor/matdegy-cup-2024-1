@@ -1,33 +1,52 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { useState, useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
+import { styled } from "styled-components";
+
+import { Home } from "./pages";
+
+import { DataLoading } from "./utils/DataLoading";
 import "./App.css";
+
+const Pages = styled.div`
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	max-width: 1600px;
+	height: 100%;
+`;
 
 function App() {
 	const [count, setCount] = useState(0);
+	const [nickname, setNickname] = useState("");
+
+	useEffect(() => {
+		setNickname(sessionStorage.getItem("nickname") || "nope");
+	}, []);
 
 	return (
 		<>
-			<div>
-				<a href="https://vitejs.dev" target="_blank">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
+			<Pages>
+				<Routes>
+					<Route path="/" element={<Home />} />
+					<Route path="/about" element={<h1>About</h1>} />
+				</Routes>
+			</Pages>
+			{/* <div>
+				<DataLoading size={100} />
 			</div>
-			<h1>Vite + React</h1>
+			<h1>MatKor</h1>
 			<div className="card">
 				<button onClick={() => setCount((count) => count + 1)}>
 					count is {count}
 				</button>
 				<p>
-					수정하다 <code>src/App.tsx</code> and save to test HMR
+					edit <code>src/App.tsx</code> and save to test HMR
 				</p>
 			</div>
 			<p className="read-the-docs">
 				Click on the Vite and React logos to learn more
 			</p>
+			<input type="date" /> */}
 		</>
 	);
 }
