@@ -8,9 +8,7 @@ const Hidden = () => {
 		<HiddenField>
 			<HiddenTitle>{isFound ? "Hidden" : "404"}</HiddenTitle>
 			<HiddenText>
-				{isFound
-					? "직전 문제(Login)에서 정답의 좌표는?(ex> A1)"
-					: "Page not found"}
+				{isFound ? "Login 문제에서 정답의 좌표는?(ex> A1)" : "Page not found"}
 			</HiddenText>
 			<HiddenInput type="text" maxLength={2} onFocus={() => setIsFound(true)} />
 			{isFound && <Button>Submit</Button>}
