@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 
+import { Button } from "../components";
+
 const Home = () => {
 	const [newNickname, setNewNickname] = useState("");
 	const [newNicknameStatus, setNewNicknameStatus] = useState("unsatisfied"); // "unsatisfied" | "duplicated" | "valid" | "pending"
@@ -30,7 +32,7 @@ const Home = () => {
 						placeholder="본인 확인 코드를 입력해주세요"
 						maxLength={8}
 					/>
-					<HomeCardButton>참여하기</HomeCardButton>
+					<Button>참여하기</Button>
 				</HomeCard>
 				<HomeCard>
 					<HomeCardTitle>새로 참여하시고 싶으신가요?</HomeCardTitle>
@@ -60,7 +62,7 @@ const Home = () => {
 							? "사용 가능한 닉네임입니다."
 							: "잠시만 기다려주세요."}
 					</HomeCardText>
-					<HomeCardButton>참여하기</HomeCardButton>
+					<Button>참여하기</Button>
 				</HomeCard>
 			</HomeContainer>
 		</HomeDiv>
@@ -73,7 +75,7 @@ const HomeDiv = styled.div`
 	justify-content: flex-start;
 	align-items: center;
 	width: 100%;
-	height: 100%;
+	height: 100vh;
 `;
 
 const HomeTitle = styled.h1`
@@ -132,26 +134,6 @@ const HomeCardInput = styled.input`
 const HomeCardText = styled.p<{ color?: string }>`
 	color: ${(props) => props.color || "var(--Black)"};
 	font-size: 1rem;
-`;
-
-const HomeCardButton = styled.div<{
-	width?: string;
-	height?: string;
-	fontSize?: string;
-}>`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	text-align: center;
-	width: ${(props) => props.width || "10rem"};
-	height: ${(props) => props.height || "3rem"};
-	background-color: var(--LightBlue);
-	color: var(--Black);
-	font-size: ${(props) => props.fontSize || "1.5rem"};
-	border-radius: 0.5rem;
-	cursor: pointer;
-	user-select: none;
 `;
 
 export default Home;

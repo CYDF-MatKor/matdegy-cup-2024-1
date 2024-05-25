@@ -16,6 +16,7 @@ const ErrorField = styled.div`
 	align-items: center;
 	width: 100%;
 	height: 100%;
+	height: 100vh;
 `;
 
 const ErrorTitle = styled.h1``;
