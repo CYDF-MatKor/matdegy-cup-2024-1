@@ -1,0 +1,16 @@
+@font-face {
+	font-family: "MoiraiOne-Regular";
+	src: url(./MoiraiOne-Regular.eot);
+	src: url(./MoiraiOne-Regular.eot?#iefix) format("embedded-opentype"),
+		url(./MoiraiOne-Regular.woff) format("woff"),
+		url(./MoiraiOne-Regular.woff2) format("woff2");
+}
+
+@font-face {
+	font-family: "SingleDay-Regular";
+	src: url(./SingleDay-Regular.eot);
+	src: url(./SingleDay-Regular.eot?#iefix) format("embedded-opentype"),
+		url(./SingleDay-Regular.woff) format("woff"),
+		url(./SingleDay-Regular.woff2) format("woff2");
+}
+
