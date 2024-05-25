@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import { styled } from "styled-components";
 
-import { Home, Error } from "./pages";
+import { Home, Error, Problems } from "./pages";
 
 import { DataLoading } from "./utils/DataLoading";
 import "./App.css";
@@ -28,7 +28,7 @@ function App() {
 			<Pages>
 				<Routes>
 					<Route path="/" element={<Home />} />
-					<Route path="/about" element={<h1>About</h1>} />
+					<Route path="/problem/:problemcode" element={<Problems />} />
 					<Route
 						path="*"
 						element={<Error code={404} message="Page not found" />}
