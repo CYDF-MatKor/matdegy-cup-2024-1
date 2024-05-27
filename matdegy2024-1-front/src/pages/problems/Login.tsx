@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { Text, ProblemEachField } from "../../components";
 
 const Login = () => {
 	const [coordinate, setCoordinate] = useState({
@@ -33,8 +34,8 @@ const Login = () => {
 	};
 
 	return (
-		<LoginField>
-			<LoginText>{count}/5</LoginText>
+		<ProblemEachField>
+			<Text>{count}/5</Text>
 			<LoginTable>
 				{[...Array(9)].map((_, i) => (
 					<LoginTableRow key={"row" + i}>
@@ -66,21 +67,9 @@ const Login = () => {
 					</LoginTableRow>
 				))}
 			</LoginTable>
-		</LoginField>
+		</ProblemEachField>
 	);
 };
-
-const LoginField = styled.div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-`;
-
-const LoginText = styled.p`
-	font-size: 1.5rem;
-`;
 
 const LoginTable = styled.div`
 	display: flex;

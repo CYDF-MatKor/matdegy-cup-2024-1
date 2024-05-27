@@ -1,15 +1,15 @@
 import styled from "styled-components";
-import { Button } from "../../components";
+import { Button, Title, Text, ProblemEachField } from "../../components";
 import { useState } from "react";
 
 const Hidden = () => {
 	const [isFound, setIsFound] = useState(false);
 	return (
-		<HiddenField>
-			<HiddenTitle>{isFound ? "Hidden" : "404"}</HiddenTitle>
-			<HiddenText>
+		<ProblemEachField>
+			<Title>{isFound ? "Hidden" : "404"}</Title>
+			<Text>
 				{isFound ? "Login 문제에서 정답의 좌표는?(ex> A1)" : "Page not found"}
-			</HiddenText>
+			</Text>
 			<HiddenInput
 				isFound={isFound}
 				type="text"
@@ -18,24 +18,9 @@ const Hidden = () => {
 				onFocus={() => setIsFound(true)}
 			/>
 			{isFound && <Button>Submit</Button>}
-		</HiddenField>
+		</ProblemEachField>
 	);
 };
-
-const HiddenField = styled.div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: 100%;
-`;
-
-const HiddenTitle = styled.h1``;
-
-const HiddenText = styled.p`
-	font-size: 1.5rem;
-`;
 
 const HiddenInput = styled.input<{ isFound?: boolean }>`
 	-webkit-appearance: none;
