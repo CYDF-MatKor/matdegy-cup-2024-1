@@ -14,3 +14,11 @@
 		url(./SingleDay-Regular.woff2) format("woff2");
 }
 
+@font-face {
+	font-family: NotoColorEmoji-Regular;
+	src: url(./NotoColorEmoji-Regular.eot);
+	src: url(./NotoColorEmoji-Regular.eot?#iefix) format("embedded-opentype"),
+		url(./NotoColorEmoji-Regular.woff) format("woff"),
+		url(./NotoColorEmoji-Regular.woff2) format("woff2");
+}
+
