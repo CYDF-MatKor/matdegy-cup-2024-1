@@ -54,4 +54,8 @@ const ProblemEachField = styled.div`
 	width: 100%;
 `;
 
-export { Button, Input, Title, Text, ProblemEachField };
+const MathText = styled.span`
+	font-family: "KaTeX_Math";
+`;
+
+export { Button, Input, Title, Text, ProblemEachField, MathText };

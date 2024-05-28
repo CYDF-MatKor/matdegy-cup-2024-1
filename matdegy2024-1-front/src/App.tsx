@@ -12,7 +12,7 @@ const Pages = styled.div`
 	flex-direction: row;
 	justify-content: center;
 	max-width: 1600px;
-	height: 100%;
+	min-height: 100vh;
 `;
 
 function App() {

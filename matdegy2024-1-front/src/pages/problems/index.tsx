@@ -1,6 +1,7 @@
 import { default as ProblemLogin } from "./Login";
 import { default as ProblemHidden } from "./Hidden";
 import { default as ProblemSymbol } from "./Symbol";
+import { default as ProblemHeights } from "./Heights";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Navigate } from "react-router-dom";
@@ -23,9 +24,10 @@ const Problems = () => {
 			{problemcode in ProblemCodeToTitle && (
 				<Title>{ProblemCodeToTitle[problemcode]}</Title>
 			)}
-			{problemcode == "1" && <ProblemLogin />}{" "}
-			{problemcode == "2" && <ProblemHidden />}{" "}
-			{problemcode == "3" && <ProblemSymbol />}{" "}
+			{problemcode == "1" && <ProblemLogin />}
+			{problemcode == "2" && <ProblemHidden />}
+			{problemcode == "3" && <ProblemSymbol />}
+			{problemcode == "4" && <ProblemHeights />}
 		</ProblemField>
 	);
 };
@@ -37,7 +39,6 @@ const ProblemField = styled.div`
 	align-items: center;
 	min-width: 100%;
 	min-height: 100%;
-	height: 100vh;
 `;
 
 export default Problems;
