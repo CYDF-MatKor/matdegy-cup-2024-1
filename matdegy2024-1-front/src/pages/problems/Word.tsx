@@ -32,7 +32,7 @@ const Word = () => {
 				}}>
 				{string}
 			</Text>
-			<Input type="text" maxLength={2} />
+			<Input type="text" maxLength={80} />
 			<Button onClick={() => setIdx((idx + 1) % 10)}>Submit</Button>
 		</ProblemEachField>
 	);

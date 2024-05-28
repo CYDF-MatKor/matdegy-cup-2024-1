@@ -4,6 +4,7 @@ import { default as ProblemSymbol } from "./Symbol";
 import { default as ProblemHeights } from "./Heights";
 import { default as ProblemSequence } from "./Sequence";
 import { default as ProblemWord } from "./Word";
+import { default as ProblemBirthday } from "./Birthday";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Navigate } from "react-router-dom";
@@ -15,8 +16,9 @@ const ProblemCodeToTitle: { [key: string]: string } = {
 	"4": "Heights",
 	"5": "Sequence",
 	"6": "Word",
+	"7": "Birthday",
 };
-const ProblemList = ["1", "2", "3", "4", "5", "6"];
+const ProblemList = ["1", "2", "3", "4", "5", "6", "7"];
 
 const Problems = () => {
 	const { problemcode } = useParams();
@@ -34,6 +36,7 @@ const Problems = () => {
 			{problemcode == "4" && <ProblemHeights />}
 			{problemcode == "5" && <ProblemSequence />}
 			{problemcode == "6" && <ProblemWord />}
+			{problemcode == "7" && <ProblemBirthday />}
 		</ProblemField>
 	);
 };

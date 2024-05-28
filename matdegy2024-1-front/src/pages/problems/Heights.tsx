@@ -47,7 +47,7 @@ const Heights = () => {
 				답은 팰린드롬임)
 			</Text>
 
-			<Input type="text" maxLength={2} />
+			<Input type="text" maxLength={10} />
 			<Button>Submit</Button>
 		</ProblemEachField>
 	);
