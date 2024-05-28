@@ -3,6 +3,7 @@ import { default as ProblemHidden } from "./Hidden";
 import { default as ProblemSymbol } from "./Symbol";
 import { default as ProblemHeights } from "./Heights";
 import { default as ProblemSequence } from "./Sequence";
+import { default as ProblemWord } from "./Word";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Navigate } from "react-router-dom";
@@ -13,8 +14,9 @@ const ProblemCodeToTitle: { [key: string]: string } = {
 	"3": "Symbol",
 	"4": "Heights",
 	"5": "Sequence",
+	"6": "Word",
 };
-const ProblemList = ["1", "2", "3", "4", "5"];
+const ProblemList = ["1", "2", "3", "4", "5", "6"];
 
 const Problems = () => {
 	const { problemcode } = useParams();
@@ -31,6 +33,7 @@ const Problems = () => {
 			{problemcode == "3" && <ProblemSymbol />}
 			{problemcode == "4" && <ProblemHeights />}
 			{problemcode == "5" && <ProblemSequence />}
+			{problemcode == "6" && <ProblemWord />}
 		</ProblemField>
 	);
 };

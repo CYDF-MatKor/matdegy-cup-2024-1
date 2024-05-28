@@ -29,7 +29,7 @@ const Sequence = () => {
 	}, [idx]);
 	return (
 		<ProblemEachField>
-			<Text>{idx + 1}.</Text>
+			<Text>{idx + 1}/5</Text>
 			<Text>아래 수를 대표하는 영어단어 하나를 입력하세요.(소문자)</Text>
 			<Text>{string}</Text>
 			<Input type="text" maxLength={2} />
