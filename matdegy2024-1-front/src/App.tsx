@@ -28,7 +28,7 @@ function App() {
 			<Pages>
 				<Routes>
 					<Route path="/" element={<Home />} />
-					<Route path="/problem/:problemcode" element={<Problems />} />
+					<Route path="/problem/:problemurl" element={<Problems />} />
 					<Route
 						path="*"
 						element={<Error code={404} message="Page not found" />}

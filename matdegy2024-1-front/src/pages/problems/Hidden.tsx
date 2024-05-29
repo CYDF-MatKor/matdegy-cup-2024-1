@@ -1,17 +1,26 @@
 import styled from "styled-components";
 import { Button, Title, Text, ProblemEachField } from "../../components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Hidden = () => {
 	const [isFound, setIsFound] = useState(false);
+	const [title, setTitle] = useState("404");
+	const [text, setText] = useState("Page not found");
+	useEffect(() => {
+		if (isFound) {
+			setTitle("Hidden");
+			setText("Login 문제에서 정답의 좌표는?(ex> A1)");
+		} else {
+			setTitle("404");
+			setText("Page not found");
+		}
+	}, [isFound]);
 	return (
 		<ProblemEachField>
-			<Title>{isFound ? "Hidden" : "404"}</Title>
-			<Text>
-				{isFound ? "Login 문제에서 정답의 좌표는?(ex> A1)" : "Page not found"}
-			</Text>
+			<Title> {title} </Title>
+			<Text> {text} </Text>
 			<HiddenInput
-				isFound={isFound}
+				x={isFound}
 				type="text"
 				maxLength={2}
 				tabIndex={-1}
@@ -22,12 +31,12 @@ const Hidden = () => {
 	);
 };
 
-const HiddenInput = styled.input<{ isFound?: boolean }>`
+const HiddenInput = styled.input<{ x?: boolean }>`
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
-	border: ${(props) => (props.isFound ? "1px solid black" : "0")};
-	outline: ${(props) => (props.isFound ? "1px solid black" : "0")};
+	border: ${(props) => (props.x ? "1px solid black" : "0")};
+	outline: ${(props) => (props.x ? "1px solid black" : "0")};
 	background-color: inherit;
 	color: transparent;
 	font-size: 1rem;
@@ -38,8 +47,8 @@ const HiddenInput = styled.input<{ isFound?: boolean }>`
 	top: 740px;
 	left: 600px;
 	&:focus {
-		outline: ${(props) => (props.isFound ? "1px solid black" : "0")};
-		border: ${(props) => (props.isFound ? "1px solid black" : "0")};
+		outline: ${(props) => (props.x ? "1px solid black" : "0")};
+		border: ${(props) => (props.x ? "1px solid black" : "0")};
 	}
 `;
 
