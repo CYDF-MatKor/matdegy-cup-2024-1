@@ -5,6 +5,10 @@ import {
 	ProblemEachField,
 	Text,
 	MathText,
+	Alert,
+	Title,
+	AlertTitle,
+	AlertText,
 } from "../../components";
 import { DataLoading } from "../../utils/DataLoading";
 import axios from "axios";
@@ -13,6 +17,71 @@ import { useState, useEffect } from "react";
 const Heights = () => {
 	const [firstImage, setFirstImage] = useState<string>("");
 	const [secondImage, setSecondImage] = useState<string>("");
+	const [isCorrect, setIsCorrect] = useState<boolean | null | undefined>(null);
+	const [showAlert, setShowAlert] = useState<boolean>(false);
+	const [alertComponent, setAlertComponent] = useState<JSX.Element>(
+		<DataLoading />
+	);
+	const [msg, setMsg] = useState<string>("");
+
+	const [answer, setAnswer] = useState<string>("");
+
+	const checkAnswer = async () => {
+		setIsCorrect(null);
+		setShowAlert(true);
+		axios
+			.get("/api/submit/heights?answer=" + answer)
+			.then((res) => {
+				if (res.data.lcm_correct) {
+					setIsCorrect(true);
+					setMsg(res.data.message);
+				} else {
+					setIsCorrect(false);
+				}
+			})
+			.catch((res) => {
+				setIsCorrect(undefined);
+			});
+	};
+
+	useEffect(() => {
+		console.log(isCorrect);
+		if (isCorrect === null) {
+			setAlertComponent(<DataLoading />);
+		} else if (isCorrect === true) {
+			setAlertComponent(
+				<>
+					<AlertTitle
+						style={{
+							color: "var(--Green)",
+						}}>
+						Correct!
+					</AlertTitle>
+					<AlertText>{msg}</AlertText>
+					<Button onClick={() => setShowAlert(false)}>Next</Button>
+				</>
+			);
+		} else if (isCorrect === false) {
+			setAlertComponent(
+				<>
+					<AlertTitle
+						style={{
+							color: "var(--Red)",
+						}}>
+						Incorrect!
+					</AlertTitle>
+					<Button onClick={() => setShowAlert(false)}>Close</Button>
+				</>
+			);
+		} else {
+			setAlertComponent(
+				<>
+					<AlertTitle style={{ color: "var(--Red)" }}>Error!</AlertTitle>
+					<Button onClick={() => setShowAlert(false)}>Close</Button>
+				</>
+			);
+		}
+	}, [isCorrect]);
 
 	useEffect(() => {
 		axios
@@ -47,8 +116,13 @@ const Heights = () => {
 				답은 팰린드롬임)
 			</Text>
 
-			<Input type="text" maxLength={10} />
-			<Button>Submit</Button>
+			<Input
+				type="text"
+				maxLength={10}
+				onInput={(e) => setAnswer(e.currentTarget.value)}
+			/>
+			<Button onClick={checkAnswer}>Submit</Button>
+			<Alert id="alert" show={showAlert} children={alertComponent} />
 		</ProblemEachField>
 	);
 };
