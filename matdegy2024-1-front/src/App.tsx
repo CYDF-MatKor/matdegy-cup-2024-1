@@ -8,34 +8,34 @@ import { DataLoading } from "./utils/DataLoading";
 import "./App.css";
 
 const Pages = styled.div`
-	display: flex;
-	flex-direction: row;
-	justify-content: center;
-	max-width: 1600px;
-	min-height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  max-width: 1600px;
+  min-height: 100vh;
 `;
 
 function App() {
-	const [count, setCount] = useState(0);
-	const [nickname, setNickname] = useState("");
+  const [count, setCount] = useState(0);
+  const [nickname, setNickname] = useState("");
 
-	useEffect(() => {
-		setNickname(sessionStorage.getItem("nickname") || "nope");
-	}, []);
+  useEffect(() => {
+    setNickname(sessionStorage.getItem("nickname") || "nope");
+  }, []);
 
-	return (
-		<>
-			<Pages>
-				<Routes>
-					<Route path="/" element={<Home />} />
-					<Route path="/problem/:problemurl" element={<Problems />} />
-					<Route
-						path="*"
-						element={<Error code={404} message="Page not found" />}
-					/>
-				</Routes>
-			</Pages>
-			{/* <div>
+  return (
+    <>
+      <Pages>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/problem/:problemurl" element={<Problems />} />
+          <Route
+            path="*"
+            element={<Error code={404} message="Page not found" />}
+          />
+        </Routes>
+      </Pages>
+      {/* <div>
 				<DataLoading size={100} />
 			</div>
 			<h1>MatKor</h1>
@@ -51,9 +51,8 @@ function App() {
 				Click on the Vite and React logos to learn more
 			</p>
 			<input type="date" /> */}
-		</>
-	);
+    </>
+  );
 }
 
 export default App;
-
