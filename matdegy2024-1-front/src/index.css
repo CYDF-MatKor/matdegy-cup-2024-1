@@ -35,8 +35,25 @@ body {
 
 h1 {
 	font-family: MoiraiOne-Regular;
-	font-size: 3.2em;
+	font-size: 3em;
 	line-height: 1.1;
+	text-shadow: 0 0 0.5 white;
+	background: linear-gradient(
+		90deg,
+		#ff0000,
+		#ff7f00,
+		#ffc400,
+		#00a30e,
+		#0000ff,
+		#4b0082,
+		#8b00ff
+	);
+
+	padding: 0.25em 0.5em;
+	border-radius: 0.5em;
+	color: white;
+	border: 5px dashed white;
+	box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.5);
 }
 
 button {
@@ -67,27 +84,11 @@ button:focus-visible {
 	}
 }
 
-/* input {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	border: 0;
-	outline: 0;
-	background-color: inherit;
-	cursor: default;
-	color: transparent;
-}
-
-input:focus {
-	outline: 0;
-	border: 0;
-} */
-
 :root {
 	--Black: #000000;
 	--DarkNavy: #0e1c36;
 	--LightNavy: #868d9a;
-	--Gray: #cfd2d7;
+	--Gray: #9d9d9d;
 	--LightGray: #f0f0f0;
 	--White: #ffffff;
 	--Red: #f04848;
@@ -101,6 +102,9 @@ input:focus {
 	--LightYellow: #fffde5;
 	--LightGreen: #eaf7f0;
 	--LightBlue: #d1e2f6;
+
+	--LightGreen: #88ff00;
+	--MainPink: #ff00a6;
 
 	--font-size-32: 2rem;
 	--font-size-20: 1.25rem;
@@ -119,4 +123,3 @@ input:focus {
 
 	--box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.1);
 }
-
