@@ -175,6 +175,18 @@ const getAnswer = async ({ pid }) => {
   }
 };
 
+const makeSQLInjection = async ({ pid, query }) => {
+  try {
+    const result = await db("problems")
+      .where({ pid })
+      .whereRaw("`answer` = '" + query + "'");
+    return result;
+  } catch (e) {
+    logger.error(e);
+    return null;
+  }
+};
+
 module.exports = {
   nicknameDuplicateCheck,
   createUser,
@@ -187,4 +199,5 @@ module.exports = {
   addLoginToUser,
   checkLogin,
   getAnswer,
+  makeSQLInjection,
 };

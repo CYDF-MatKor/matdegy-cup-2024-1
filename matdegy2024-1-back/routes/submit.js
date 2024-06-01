@@ -15,6 +15,7 @@ const {
   addLoginToUser,
   checkLogin,
   getAnswer,
+  makeSQLInjection,
 } = require("../modules/mysql2");
 
 const title_naive_list = [
@@ -25,7 +26,7 @@ const title_naive_list = [
   "sequence3",
   "sequence4",
   "sequence5",
-  "word",
+  "word1",
   "word2",
   "word3",
   "word4",
@@ -237,9 +238,43 @@ router.get("/:title", async function (req, res, next) {
           res.status(500).send("Internal Server Error");
           return;
         }
-      }
-
-      res.status(200).send("Not Implemented");
+      } else if (title === "probability") {
+      } else if (title === "mountain") {
+      } else if (title === "attack") {
+        try {
+          const query = req.query.query;
+          if (!query) {
+            res.status(400).json({ message: "Bad Request" });
+            return;
+          }
+          const result = await makeSQLInjection({ query, pid });
+          if (!result) {
+            res.status(200).json({ message: "Wrong! Invalid Query" });
+          } else {
+            if (result.length > 1) {
+              res.status(200).json({
+                correct: false,
+                message: "틀렸습니다! 하나보다 많은 문제를 불러왔습니다.",
+              });
+            } else if (result.length === 1) {
+              await addSolve({ uid, pid });
+              const msg = await getMsg({ pid });
+              res
+                .status(200)
+                .json({ correct: true, message: msg.message || "" });
+            } else {
+              res.status(200).json({ correct: false, message: "틀렸습니다!" });
+            }
+          }
+        } catch (e) {
+          logger.error(e);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
+      } else if (title === "guess") {
+      } else if (title === "sponsorship") {
+      } else if (title === "codeforces") {
+      } else res.status(200).send("Not Implemented");
       return;
     }
   } catch (e) {

@@ -43,7 +43,7 @@ INSERT INTO `problems` (`number`, `title`, `answer`, `message`) VALUES
   (7, 'birthday', '2022-05-02 19:00', '오늘은 사국 23학번 지수환의 생일입니다. 모두 축하해주세요!'),
   (8, 'probability', NULL, '설정한 확률변수가 따르는 확률분포가 있나요?'), 
   (9, 'iqtest', 'IQ_avg_is_100', '머리가 나쁘면 눈이 고생한다'),
-  (10, 'mountatain', NULL, '개발시 console.log를 통해 디버깅 한다면, 배포시에는 꼭 지워주세요'),
+  (10, 'mountatain', 'm0untain_picture', '개발시 console.log를 통해 디버깅 한다면, 배포시에는 꼭 지워주세요'),
   (11, 'attack', 'm4td3gy_1s_4w3s0m3', '웹 개발시 적어도 SQL Injection은 주의합시다'),
   (12, 'guess', '밥솥', '꼬맨틀은 Cosine Similarity를 사용합니다'),
   (13, 'sponsorship', NULL, 'Jane Street는 실제로 해당 문제를 입사 시험에 사용한 적이 있습니다'),
