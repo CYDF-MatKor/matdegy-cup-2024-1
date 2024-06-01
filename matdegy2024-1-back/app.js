@@ -2,17 +2,40 @@ var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
+const passport = require("passport");
+const session = require("express-session");
+require("dotenv").config();
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
 const submitRouter = require("./routes/submit");
 const logger = require("./modules/logger");
 
+require("./modules/passport")();
+
 var app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.cookie_SECRET,
+    cookie: {
+      httpOnly: true,
+      secure: false,
+    },
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use((req, res, next) => {
   // console.log("Request URL: ", req.originalUrl);
@@ -32,15 +55,11 @@ app.use((req, res, next) => {
   logger.info("Request Files: ", req.files);
   logger.info("Request Headers: ", req.headers);
   logger.info("Request User: ", req.user);
+  console.log("Request user: ", req.user);
 
   // for form-data
   next();
 });
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);

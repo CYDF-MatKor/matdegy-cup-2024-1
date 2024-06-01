@@ -31,7 +31,22 @@ const createUser = async (nickname) => {
   }
 };
 
+const getUser = async ({ nickname, code }) => {
+  try {
+    const result = await db("users").where({ nickname, code }).select("uid");
+    if (result.length > 0) {
+      return { uid: result[0].uid };
+    } else {
+      return { uid: null };
+    }
+  } catch (e) {
+    console.error(e);
+    return { uid: null };
+  }
+};
+
 module.exports = {
   nicknameDuplicateCheck,
   createUser,
+  getUser,
 };
