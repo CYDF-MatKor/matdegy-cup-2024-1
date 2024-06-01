@@ -4,6 +4,19 @@ const { parse } = require("node-html-parser");
 const puppeteer = require("puppeteer");
 require("dotenv").config();
 
+const logger = require("../modules/logger");
+
+const {
+  compareAnswer,
+  checkSolve,
+  addSolve,
+  getMsg,
+  getPID,
+  addLoginToUser,
+  checkLogin,
+  getAnswer,
+} = require("../modules/mysql2");
+
 const title_naive_list = [
   "symbol",
   "heights",
@@ -60,13 +73,179 @@ const title_list = [
 ];
 
 router.get("/:title", async function (req, res, next) {
+  if (!req.user) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
   const title = req.params.title;
-  if (!title_list.includes(title)) {
+  if (!title || !title_list.includes(title)) {
     res.status(404).send("Not Found");
     return;
   }
-  if (title_naive_list.includes(title)) {
-    const answer = req.query.answer;
+  try {
+    const { pid } = await getPID({ title });
+    if (!pid) {
+      res.status(500).send("Internal Server Error");
+      return;
+    }
+    const uid = req.user.uid;
+    const ischeck = await checkSolve({ uid, pid });
+    if (ischeck) {
+      res.status(200).json({ correct: true, message: "이미 푼 문제입니다." });
+      return;
+    }
+    if (title_naive_list.includes(title)) {
+      const answer = req.query.answer;
+      if (!answer) {
+        res.status(400).send("Bad Request");
+        return;
+      }
+      try {
+        const result = await compareAnswer({ title, answer });
+        if (result.error) {
+          res.status(500).send("Internal Server Error");
+          return;
+        } else if (result.correct) {
+          const time = await addSolve({ uid, pid });
+          if (time.error) {
+            res.status(500).send("Internal Server Error");
+            return;
+          }
+          const msg = await getMsg({ pid });
+          if (msg.error) {
+            res.status(500).send("Internal Server Error");
+            return;
+          }
+          res.status(200).json({ correct: true, message: msg.message || "" });
+          return;
+        } else {
+          res.status(200).json({ correct: false });
+          return;
+        }
+      } catch (e) {
+        logger.error(e);
+        res.status(500).send("Internal Server Error");
+        return;
+      }
+    } else {
+      if (title === "login") {
+        const answer = req.query.answer;
+        const coord = req.query.coord;
+        if (!answer || !coord) {
+          res.status(400).send("Bad Request");
+          return;
+        }
+        try {
+          const result = await compareAnswer({ title, answer });
+          if (result.error) {
+            res.status(500).send("Internal Server Error");
+            return;
+          } else if (result.correct) {
+            const time = await addSolve({ uid, pid });
+            if (time.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            const msg = await getMsg({ pid });
+            if (msg.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            await addLoginToUser({ uid, login: coord });
+            res.status(200).json({ correct: true, message: msg.message || "" });
+            return;
+          } else {
+            res.status(200).json({ correct: false });
+            return;
+          }
+        } catch (e) {
+          logger.error(e);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
+      } else if (title === "hidden") {
+        const answer = req.query.answer;
+        if (!answer) {
+          res.status(400).send("Bad Request");
+          return;
+        }
+        try {
+          const result = await checkLogin({ uid, login: answer });
+          if (result) {
+            const time = await addSolve({ uid, pid });
+            if (time.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            const msg = await getMsg({ pid });
+            if (msg.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            res.status(200).json({ correct: true, message: msg.message || "" });
+            return;
+          } else {
+            res.status(200).json({ correct: false });
+            return;
+          }
+        } catch (e) {
+          logger.error(e);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
+      } else if (title === "birthday") {
+        const answer = req.query.answer;
+        if (!answer) {
+          res.status(400).send("Bad Request");
+          return;
+        }
+        try {
+          const realAnswer = await getAnswer({ pid });
+          if (!realAnswer.answer) {
+            res.status(500).send("Internal Server Error");
+            return;
+          } else if (realAnswer.answer === answer) {
+            const time = await addSolve({ uid, pid });
+            if (time.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            const msg = await getMsg({ pid });
+            if (msg.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            res.status(200).json({ correct: true, message: msg.message || "" });
+            return;
+          } else {
+            const realAnswerTime = new Date(realAnswer.answer);
+            const answerTime = new Date(answer);
+            if (realAnswerTime < answerTime) {
+              res
+                .status(200)
+                .json({ correct: false, message: "정답보다 느린 시간입니다." });
+              return;
+            } else {
+              res
+                .status(200)
+                .json({ correct: false, message: "정답보다 빠른 시간입니다." });
+              return;
+            }
+          }
+        } catch (e) {
+          logger.error(e);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
+      }
+
+      res.status(200).send("Not Implemented");
+      return;
+    }
+  } catch (e) {
+    logger.error(e);
+    res.status(500).send("Internal Server Error");
+    return;
   }
 });
 
