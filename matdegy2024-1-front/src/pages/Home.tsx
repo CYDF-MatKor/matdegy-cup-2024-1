@@ -1,25 +1,81 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
 
-import { Button } from "../components";
+import { Button, Alert, AlertTitle, AlertText } from "../components";
+
+import { DataLoading } from "../utils/DataLoading";
 
 const Home = () => {
   const [newNickname, setNewNickname] = useState("");
   const [newNicknameStatus, setNewNicknameStatus] = useState("unsatisfied"); // "unsatisfied" | "duplicated" | "valid" | "pending"
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertComponent, setAlertComponent] = useState<JSX.Element>(
+    <DataLoading />
+  );
+  const [msg, setMsg] = useState<string>("");
+
   useEffect(() => {
     const checkNickname = setTimeout(() => {
       if (newNickname.length < 3 || newNickname.length > 20) {
         setNewNicknameStatus("unsatisfied");
       } else {
-        if (newNickname === "duplicated") {
-          setNewNicknameStatus("duplicated");
-        } else {
-          setNewNicknameStatus("valid");
-        }
+        axios
+          .get("/api/users/nicknamedup?nickname=" + newNickname)
+          .then((res) => {
+            if (res.data.isdup) {
+              setNewNicknameStatus("duplicated");
+            } else {
+              setNewNicknameStatus("valid");
+            }
+          })
+          .catch((err) => {
+            setNewNicknameStatus("pending");
+            console.log(err);
+          });
       }
     }, 1000);
     return () => clearTimeout(checkNickname);
   }, [newNickname]);
+
+  useEffect(() => {
+    if (msg !== "") {
+      setAlertComponent(
+        <>
+          <AlertTitle
+            style={{
+              color:
+                msg === "등록에 실패했습니다." ? "var(--Red)" : "var(--Green)",
+            }}>
+            {msg === "등록에 실패했습니다." ? "Failed!" : "Success!"}
+          </AlertTitle>
+          <AlertText>{msg}</AlertText>
+          {msg !== "등록에 실패했습니다." && (
+            <AlertText>코드를 다른 곳에 반드시 저장해 두세요!</AlertText>
+          )}
+          <Button onClick={() => setShowAlert(false)}>Next</Button>
+        </>
+      );
+    } else {
+      setAlertComponent(<DataLoading />);
+    }
+  }, [msg]);
+
+  const signUp = () => {
+    if (newNicknameStatus === "valid") {
+      axios
+        .post("/api/users/signup", {
+          nickname: newNickname,
+        })
+        .then((res) => {
+          setMsg("당신의 코드는 " + res.data.code + "입니다.");
+        })
+        .catch((err) => {
+          console.log(err);
+          setMsg("등록에 실패했습니다.");
+        });
+    }
+  };
 
   return (
     <HomeDiv>
@@ -62,9 +118,18 @@ const Home = () => {
               ? "사용 가능한 닉네임입니다."
               : "잠시만 기다려주세요."}
           </HomeCardText>
-          <Button>참여하기</Button>
+          <Button
+            onClick={() => {
+              if (newNicknameStatus === "valid") {
+                setShowAlert(true);
+                signUp();
+              }
+            }}>
+            참여하기
+          </Button>
         </HomeCard>
       </HomeContainer>
+      <Alert id="alert" show={showAlert} children={alertComponent} />
     </HomeDiv>
   );
 };
