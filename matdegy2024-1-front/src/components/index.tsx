@@ -140,6 +140,9 @@ const AlertText = styled.p`
   font-family: "SingleDay-Regular";
   color: var(--Black);
   font-size: 1.5rem;
+  font-family: "SingleDay-Regular";
+  color: var(--Black);
+  font-size: 1.5rem;
 `;
 
 const Alert = ({
