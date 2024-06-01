@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 import { Button } from "../components";
 
 const Home = () => {
+  const navigate = useNavigate();
   const [newNickname, setNewNickname] = useState("");
   const [newNicknameStatus, setNewNicknameStatus] = useState("unsatisfied"); // "unsatisfied" | "duplicated" | "valid" | "pending"
   useEffect(() => {
@@ -32,7 +34,12 @@ const Home = () => {
             placeholder="본인 확인 코드를 입력해주세요"
             maxLength={8}
           />
-          <Button>참여하기</Button>
+          <Button
+            onClick={() => {
+              navigate("/map");
+            }}>
+            참여하기
+          </Button>
         </HomeCard>
         <HomeCard>
           <HomeCardTitle>새로 참여하시고 싶으신가요?</HomeCardTitle>
@@ -62,7 +69,12 @@ const Home = () => {
               ? "사용 가능한 닉네임입니다."
               : "잠시만 기다려주세요."}
           </HomeCardText>
-          <Button>참여하기</Button>
+          <Button
+            onClick={() => {
+              navigate("/map");
+            }}>
+            참여하기
+          </Button>
         </HomeCard>
       </HomeContainer>
     </HomeDiv>
