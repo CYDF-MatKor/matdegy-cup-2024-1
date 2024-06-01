@@ -76,6 +76,7 @@ const ProblemEachField = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
+  padding: 20px;
 `;
 
 const MathText = styled.span`
@@ -87,7 +88,7 @@ const AlertBackground = styled.div<{ show: boolean }>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
@@ -112,9 +113,13 @@ const AlertField = styled.div<{ show: boolean }>`
 
 const AlertTitle = styled.h1`
   font-family: "SingleDay-Regular";
+  background: var(--Gray);
 `;
 
 const AlertText = styled.p`
+  font-family: "SingleDay-Regular";
+  color: var(--Black);
+  font-size: 1.5rem;
   font-family: "SingleDay-Regular";
   color: var(--Black);
   font-size: 1.5rem;
