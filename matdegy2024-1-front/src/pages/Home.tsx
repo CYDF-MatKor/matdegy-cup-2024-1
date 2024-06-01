@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -7,6 +8,7 @@ import { Button, Alert, AlertTitle, AlertText } from "../components";
 import { DataLoading } from "../utils/DataLoading";
 
 const Home = () => {
+  const navigate = useNavigate();
   const [newNickname, setNewNickname] = useState("");
   const [newNicknameStatus, setNewNicknameStatus] = useState("unsatisfied"); // "unsatisfied" | "duplicated" | "valid" | "pending"
   const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -88,7 +90,12 @@ const Home = () => {
             placeholder="본인 확인 코드를 입력해주세요"
             maxLength={8}
           />
-          <Button>참여하기</Button>
+          <Button
+            onClick={() => {
+              navigate("/map");
+            }}>
+            참여하기
+          </Button>
         </HomeCard>
         <HomeCard>
           <HomeCardTitle>새로 참여하시고 싶으신가요?</HomeCardTitle>

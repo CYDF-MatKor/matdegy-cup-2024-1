@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const Button = styled.div<{
   width?: string;
@@ -36,6 +37,25 @@ const Button = styled.div<{
     background-color: var(--LightGreen);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     transform: translateY(4px);
+  }
+`;
+
+const SubButton = styled(Link)`
+  position: absolute;
+  top: 20px;
+  left: 40px;
+
+  color: var(--White);
+  text-decoration: none;
+  font-size: 1.5rem;
+
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  transition: background-color 0.3s;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+
+  &:hover {
+    background-color: var(--MainPink);
   }
 `;
 
@@ -143,6 +163,7 @@ const Alert = ({
 
 export {
   Button,
+  SubButton,
   Input,
   Title,
   Text,
