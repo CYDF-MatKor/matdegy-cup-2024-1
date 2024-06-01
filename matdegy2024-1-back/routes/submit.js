@@ -18,6 +18,8 @@ const {
   makeSQLInjection,
 } = require("../modules/mysql2");
 
+const { codeforces } = require("../modules/codeforces");
+
 const title_naive_list = [
   "symbol",
   "heights",
@@ -239,6 +241,52 @@ router.get("/:title", async function (req, res, next) {
           return;
         }
       } else if (title === "probability") {
+        const submissionID = req.query.submissionID;
+        if (!submissionID) {
+          res.status(400).send("Bad Request");
+          return;
+        }
+        try {
+          const { result } = await codeforces({
+            submissionID,
+            title: "A - Probability",
+          });
+          if (result === "success") {
+            const time = await addSolve({ uid, pid });
+            if (time.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            const msg = await getMsg({ pid });
+            if (msg.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            res.status(200).json({ correct: true, message: msg.message || "" });
+            return;
+          } else if (result === "Not Accepted") {
+            res.status(200).json({ correct: false, message: "Not Accepted" });
+            return;
+          } else if (result === "Not that Problem") {
+            res
+              .status(200)
+              .json({ correct: false, message: "Not that Problem" });
+            return;
+          } else if (result === "Wrong submissionID or try again") {
+            res.status(200).json({
+              correct: false,
+              message: "Wrong submissionID or try again",
+            });
+            return;
+          } else {
+            res.status(500).send("Internal Server Error");
+            return;
+          }
+        } catch (e) {
+          logger.error(e);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
       } else if (title === "mountain") {
       } else if (title === "attack") {
         try {
@@ -273,7 +321,99 @@ router.get("/:title", async function (req, res, next) {
         }
       } else if (title === "guess") {
       } else if (title === "sponsorship") {
+        const submissionID = req.query.submissionID;
+        if (!submissionID) {
+          res.status(400).send("Bad Request");
+          return;
+        }
+        try {
+          const { result } = await codeforces({
+            submissionID,
+            title: "B - Sponsorship",
+          });
+          if (result === "success") {
+            const time = await addSolve({ uid, pid });
+            if (time.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            const msg = await getMsg({ pid });
+            if (msg.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            res.status(200).json({ correct: true, message: msg.message || "" });
+            return;
+          } else if (result === "Not Accepted") {
+            res.status(200).json({ correct: false, message: "Not Accepted" });
+            return;
+          } else if (result === "Not that Problem") {
+            res
+              .status(200)
+              .json({ correct: false, message: "Not that Problem" });
+            return;
+          } else if (result === "Wrong submissionID or try again") {
+            res.status(200).json({
+              correct: false,
+              message: "Wrong submissionID or try again",
+            });
+            return;
+          } else {
+            res.status(500).send("Internal Server Error");
+            return;
+          }
+        } catch (e) {
+          logger.error(e);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
       } else if (title === "codeforces") {
+        const submissionID = req.query.submissionID;
+        if (!submissionID) {
+          res.status(400).send("Bad Request");
+          return;
+        }
+        try {
+          const { result } = await codeforces({
+            submissionID,
+            title: "C - Codeforces",
+          });
+          if (result === "success") {
+            const time = await addSolve({ uid, pid });
+            if (time.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            const msg = await getMsg({ pid });
+            if (msg.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            res.status(200).json({ correct: true, message: msg.message || "" });
+            return;
+          } else if (result === "Not Accepted") {
+            res.status(200).json({ correct: false, message: "Not Accepted" });
+            return;
+          } else if (result === "Not that Problem") {
+            res
+              .status(200)
+              .json({ correct: false, message: "Not that Problem" });
+            return;
+          } else if (result === "Wrong submissionID or try again") {
+            res.status(200).json({
+              correct: false,
+              message: "Wrong submissionID or try again",
+            });
+            return;
+          } else {
+            res.status(500).send("Internal Server Error");
+            return;
+          }
+        } catch (e) {
+          logger.error(e);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
       } else res.status(200).send("Not Implemented");
       return;
     }
