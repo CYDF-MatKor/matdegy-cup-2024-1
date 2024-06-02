@@ -26,6 +26,7 @@ const title_naive_list = [
   "symbol",
   "heights",
   "mountain",
+  "guess",
   "sequence1",
   "sequence2",
   "sequence3",
@@ -344,83 +345,6 @@ router.get("/:title", async function (req, res, next) {
                 correct: false,
                 message: "틀렸습니다!",
               });
-            }
-          }
-        } catch (e) {
-          logger.error({ message: e });
-          res.status(500).send("Internal Server Error");
-          return;
-        }
-      } else if (title === "guess") {
-        const sess = req.query.sess;
-        const word = req.query.word;
-        if (!sess || !word) {
-          res.status(400).send("Bad Request");
-          return;
-        }
-        try {
-          const result = await guessWord({ sess, word });
-          if (result.error || !result.data) {
-            res.status(200).json({
-              isWord: false,
-              correct: false,
-              message: "없는 단어이거나 오류가 발생했습니다.",
-              guess: word,
-            });
-            return;
-          } else {
-            const { guess, rank, sim } = result.data;
-            if (sim === 1) {
-              const time = await addSolve({ uid, pid });
-              if (time.error) {
-                res.status(500).send("Internal Server Error");
-                return;
-              }
-              const msg = await getMsg({ pid });
-              if (msg.error) {
-                res.status(500).send("Internal Server Error");
-                return;
-              }
-              res.status(200).json({
-                isWord: true,
-                correct: true,
-                message: msg.message || "정답입니다!",
-                guess,
-                rank,
-                sim,
-              });
-              return;
-            } else {
-              const simData = await getSimilarity({ sess });
-              if (simData.error || !simData.similarity) {
-                res.status(200).json({
-                  isWord: false,
-                  correct: false,
-                  message: "오류가 발생했습니다.",
-                  guess: word,
-                });
-                return;
-              }
-              if (sim > simData.similarity.rest && rank === "1000위 이상") {
-                res.status(200).json({
-                  isWord: true,
-                  correct: false,
-                  message: "틀렸습니다!",
-                  guess,
-                  rank: "이 단어는 사전에는 없지만, 데이터셋에 포함되어 있으며 1,000위 이내입니다.",
-                  sim,
-                });
-                return;
-              }
-              res.status(200).json({
-                isWord: true,
-                correct: false,
-                message: "틀렸습니다!",
-                guess,
-                rank,
-                sim,
-              });
-              return;
             }
           }
         } catch (e) {
