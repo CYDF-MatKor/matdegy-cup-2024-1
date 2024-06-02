@@ -37,12 +37,12 @@ const codeforces = async ({ submissionID, title }) => {
         return { result: "Wrong submissionID or try again" };
       }
     } catch (error) {
-      logger.error(error);
+      logger.error({ message: error });
       browser.close();
       return { result: "error" };
     }
   } catch (error) {
-    logger.error(error);
+    logger.error({ message: error });
     return { result: "error" };
   }
 };

@@ -42,7 +42,6 @@ const Probability = () => {
       });
   };
   useEffect(() => {
-    console.log(isCorrect);
     if (isCorrect === null) {
       setAlertComponent(<DataLoading />);
     } else if (isCorrect === true) {

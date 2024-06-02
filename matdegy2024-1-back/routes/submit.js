@@ -18,6 +18,8 @@ const {
   makeSQLInjection,
 } = require("../modules/mysql2");
 
+const { getSimilarity, guessWord } = require("../modules/kkomantle");
+
 const { codeforces } = require("../modules/codeforces");
 
 const title_naive_list = [
@@ -95,7 +97,10 @@ router.get("/:title", async function (req, res, next) {
     const uid = req.user.uid;
     const ischeck = await checkSolve({ uid, pid });
     if (ischeck) {
-      res.status(200).json({ correct: true, message: "이미 푼 문제입니다." });
+      res.status(200).json({
+        correct: true,
+        message: "이미 푼 문제입니다.",
+      });
       return;
     }
     if (title_naive_list.includes(title)) {
@@ -120,7 +125,10 @@ router.get("/:title", async function (req, res, next) {
             res.status(500).send("Internal Server Error");
             return;
           }
-          res.status(200).json({ correct: true, message: msg.message || "" });
+          res.status(200).json({
+            correct: true,
+            message: msg.message || "",
+          });
           return;
         } else {
           res.status(200).json({ correct: false });
@@ -156,7 +164,10 @@ router.get("/:title", async function (req, res, next) {
               return;
             }
             await addLoginToUser({ uid, login: coord });
-            res.status(200).json({ correct: true, message: msg.message || "" });
+            res.status(200).json({
+              correct: true,
+              message: msg.message || "",
+            });
             return;
           } else {
             res.status(200).json({ correct: false });
@@ -186,7 +197,10 @@ router.get("/:title", async function (req, res, next) {
               res.status(500).send("Internal Server Error");
               return;
             }
-            res.status(200).json({ correct: true, message: msg.message || "" });
+            res.status(200).json({
+              correct: true,
+              message: msg.message || "",
+            });
             return;
           } else {
             res.status(200).json({ correct: false });
@@ -219,20 +233,25 @@ router.get("/:title", async function (req, res, next) {
               res.status(500).send("Internal Server Error");
               return;
             }
-            res.status(200).json({ correct: true, message: msg.message || "" });
+            res.status(200).json({
+              correct: true,
+              message: msg.message || "",
+            });
             return;
           } else {
             const realAnswerTime = new Date(realAnswer.answer);
             const answerTime = new Date(answer);
             if (realAnswerTime < answerTime) {
-              res
-                .status(200)
-                .json({ correct: false, message: "정답보다 느린 시간입니다." });
+              res.status(200).json({
+                correct: false,
+                message: "정답보다 느린 시간입니다.",
+              });
               return;
             } else {
-              res
-                .status(200)
-                .json({ correct: false, message: "정답보다 빠른 시간입니다." });
+              res.status(200).json({
+                correct: false,
+                message: "정답보다 빠른 시간입니다.",
+              });
               return;
             }
           }
@@ -263,15 +282,22 @@ router.get("/:title", async function (req, res, next) {
               res.status(500).send("Internal Server Error");
               return;
             }
-            res.status(200).json({ correct: true, message: msg.message || "" });
+            res.status(200).json({
+              correct: true,
+              message: msg.message || "",
+            });
             return;
           } else if (result === "Not Accepted") {
-            res.status(200).json({ correct: false, message: "Not Accepted" });
+            res.status(200).json({
+              correct: false,
+              message: "Not Accepted",
+            });
             return;
           } else if (result === "Not that Problem") {
-            res
-              .status(200)
-              .json({ correct: false, message: "Not that Problem" });
+            res.status(200).json({
+              correct: false,
+              message: "Not that Problem",
+            });
             return;
           } else if (result === "Wrong submissionID or try again") {
             res.status(200).json({
@@ -297,7 +323,9 @@ router.get("/:title", async function (req, res, next) {
           }
           const result = await makeSQLInjection({ query, pid });
           if (!result) {
-            res.status(200).json({ message: "Wrong! Invalid Query" });
+            res.status(200).json({
+              message: "Wrong! Invalid Query",
+            });
           } else {
             if (result.length > 1) {
               res.status(200).json({
@@ -307,11 +335,15 @@ router.get("/:title", async function (req, res, next) {
             } else if (result.length === 1) {
               await addSolve({ uid, pid });
               const msg = await getMsg({ pid });
-              res
-                .status(200)
-                .json({ correct: true, message: msg.message || "" });
+              res.status(200).json({
+                correct: true,
+                message: msg.message || "",
+              });
             } else {
-              res.status(200).json({ correct: false, message: "틀렸습니다!" });
+              res.status(200).json({
+                correct: false,
+                message: "틀렸습니다!",
+              });
             }
           }
         } catch (e) {
@@ -320,6 +352,82 @@ router.get("/:title", async function (req, res, next) {
           return;
         }
       } else if (title === "guess") {
+        const sess = req.query.sess;
+        const word = req.query.word;
+        if (!sess || !word) {
+          res.status(400).send("Bad Request");
+          return;
+        }
+        try {
+          const result = await guessWord({ sess, word });
+          if (result.error || !result.data) {
+            res.status(200).json({
+              isWord: false,
+              correct: false,
+              message: "없는 단어이거나 오류가 발생했습니다.",
+              guess: word,
+            });
+            return;
+          } else {
+            const { guess, rank, sim } = result.data;
+            if (sim === 1) {
+              const time = await addSolve({ uid, pid });
+              if (time.error) {
+                res.status(500).send("Internal Server Error");
+                return;
+              }
+              const msg = await getMsg({ pid });
+              if (msg.error) {
+                res.status(500).send("Internal Server Error");
+                return;
+              }
+              res.status(200).json({
+                isWord: true,
+                correct: true,
+                message: msg.message || "정답입니다!",
+                guess,
+                rank,
+                sim,
+              });
+              return;
+            } else {
+              const simData = await getSimilarity({ sess });
+              if (simData.error || !simData.similarity) {
+                res.status(200).json({
+                  isWord: false,
+                  correct: false,
+                  message: "오류가 발생했습니다.",
+                  guess: word,
+                });
+                return;
+              }
+              if (sim > simData.similarity.rest && rank === "1000위 이상") {
+                res.status(200).json({
+                  isWord: true,
+                  correct: false,
+                  message: "틀렸습니다!",
+                  guess,
+                  rank: "이 단어는 사전에는 없지만, 데이터셋에 포함되어 있으며 1,000위 이내입니다.",
+                  sim,
+                });
+                return;
+              }
+              res.status(200).json({
+                isWord: true,
+                correct: false,
+                message: "틀렸습니다!",
+                guess,
+                rank,
+                sim,
+              });
+              return;
+            }
+          }
+        } catch (e) {
+          logger.error(e);
+          res.status(500).send("Internal Server Error");
+          return;
+        }
       } else if (title === "sponsorship") {
         const submissionID = req.query.submissionID;
         if (!submissionID) {
@@ -342,15 +450,22 @@ router.get("/:title", async function (req, res, next) {
               res.status(500).send("Internal Server Error");
               return;
             }
-            res.status(200).json({ correct: true, message: msg.message || "" });
+            res.status(200).json({
+              correct: true,
+              message: msg.message || "",
+            });
             return;
           } else if (result === "Not Accepted") {
-            res.status(200).json({ correct: false, message: "Not Accepted" });
+            res.status(200).json({
+              correct: false,
+              message: "Not Accepted",
+            });
             return;
           } else if (result === "Not that Problem") {
-            res
-              .status(200)
-              .json({ correct: false, message: "Not that Problem" });
+            res.status(200).json({
+              correct: false,
+              message: "Not that Problem",
+            });
             return;
           } else if (result === "Wrong submissionID or try again") {
             res.status(200).json({
@@ -389,15 +504,22 @@ router.get("/:title", async function (req, res, next) {
               res.status(500).send("Internal Server Error");
               return;
             }
-            res.status(200).json({ correct: true, message: msg.message || "" });
+            res.status(200).json({
+              correct: true,
+              message: msg.message || "",
+            });
             return;
           } else if (result === "Not Accepted") {
-            res.status(200).json({ correct: false, message: "Not Accepted" });
+            res.status(200).json({
+              correct: false,
+              message: "Not Accepted",
+            });
             return;
           } else if (result === "Not that Problem") {
-            res
-              .status(200)
-              .json({ correct: false, message: "Not that Problem" });
+            res.status(200).json({
+              correct: false,
+              message: "Not that Problem",
+            });
             return;
           } else if (result === "Wrong submissionID or try again") {
             res.status(200).json({

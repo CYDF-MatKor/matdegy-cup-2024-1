@@ -9,6 +9,7 @@ import { default as ProblemProbability } from "./Probability";
 import { default as ProblemIQtest } from "./IQtest";
 import { default as ProblemMountain } from "./Mountain";
 import { default as ProblemAttack } from "./Attack";
+import { default as Guess } from "./Guess";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Navigate } from "react-router-dom";
@@ -34,6 +35,7 @@ const Problems = () => {
     9: <ProblemIQtest />,
     10: <ProblemMountain />,
     11: <ProblemAttack />,
+    12: <Guess />,
   };
   if (!problemcode) return <Navigate to="/error/404" replace={true} />;
   if (!ProblemList.includes(problemcode))
