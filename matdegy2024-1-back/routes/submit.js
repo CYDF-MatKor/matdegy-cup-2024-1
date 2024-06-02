@@ -23,6 +23,7 @@ const { codeforces } = require("../modules/codeforces");
 const title_naive_list = [
   "symbol",
   "heights",
+  "mountain",
   "sequence1",
   "sequence2",
   "sequence3",
@@ -287,7 +288,6 @@ router.get("/:title", async function (req, res, next) {
           res.status(500).send("Internal Server Error");
           return;
         }
-      } else if (title === "mountain") {
       } else if (title === "attack") {
         try {
           const query = req.query.query;

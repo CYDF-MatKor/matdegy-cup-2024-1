@@ -161,6 +161,16 @@ const Alert = ({
   );
 };
 
+const CodeforcesLink = ({ text = "Codeforces" }) => {
+  return (
+    <Link
+      to="https://matdegy.contest.codeforces.com/group/Uw9uIVZApl/contest/527699"
+      target="_blank">
+      {text}
+    </Link>
+  );
+};
+
 export {
   Button,
   SubButton,
@@ -172,4 +182,5 @@ export {
   Alert,
   AlertTitle,
   AlertText,
+  CodeforcesLink,
 };

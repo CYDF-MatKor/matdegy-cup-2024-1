@@ -4,7 +4,7 @@ const logger = require("./logger");
 
 const codeforces = async ({ submissionID, title }) => {
   try {
-    const url = `https://codeforces.com/gym/527690/submission/${submissionID}`;
+    const url = `https://codeforces.com/gym/527699/submission/${submissionID}`;
     const codeforcesID = process.env.CODEFORCES_ID;
     const codeforcesPW = process.env.CODEFORCES_PW;
     const browser = await puppeteer.launch({ headless: true });

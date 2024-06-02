@@ -12,6 +12,10 @@ const Home = () => {
   const [newNickname, setNewNickname] = useState("");
   const [newNicknameStatus, setNewNicknameStatus] = useState("unsatisfied"); // "unsatisfied" | "duplicated" | "valid" | "pending"
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [nickname, setNickname] = useState<string>("");
+  const [code, setCode] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [color, setColor] = useState<string>("var(--Black)"); // ["var(--Red)", "var(--Green)"
   const [alertComponent, setAlertComponent] = useState<JSX.Element>(
     <DataLoading />
   );
@@ -46,22 +50,25 @@ const Home = () => {
         <>
           <AlertTitle
             style={{
-              color:
-                msg === "등록에 실패했습니다." ? "var(--Red)" : "var(--Green)",
+              color: color,
             }}>
-            {msg === "등록에 실패했습니다." ? "Failed!" : "Success!"}
+            {title}
           </AlertTitle>
           <AlertText>{msg}</AlertText>
-          {msg !== "등록에 실패했습니다." && (
+          {title === "Success!" && (
             <AlertText>코드를 다른 곳에 반드시 저장해 두세요!</AlertText>
           )}
-          <Button onClick={() => setShowAlert(false)}>Next</Button>
+          {color === "var(--Green)" ? (
+            <Button onClick={() => navigate("/map")}>Go!</Button>
+          ) : (
+            <Button onClick={() => setShowAlert(false)}>Close</Button>
+          )}
         </>
       );
     } else {
       setAlertComponent(<DataLoading />);
     }
-  }, [msg]);
+  }, [msg, title, color]);
 
   const signUp = () => {
     if (newNicknameStatus === "valid") {
@@ -71,12 +78,32 @@ const Home = () => {
         })
         .then((res) => {
           setMsg("당신의 코드는 " + res.data.code + "입니다.");
+          setTitle("Success!");
+          setColor("var(--Green)");
         })
         .catch((err) => {
           console.log(err);
           setMsg("등록에 실패했습니다.");
+          setTitle("Error!");
+          setColor("var(--Red)");
         });
     }
+  };
+
+  const login = () => {
+    axios
+      .get("/api/users/login?nickname=" + nickname + "&code=" + code)
+      .then((res) => {
+        setMsg(res.data.message);
+        setTitle("로그인 성공!");
+        setColor("var(--Green)");
+      })
+      .catch((err) => {
+        console.log(err);
+        setMsg("로그인에 실패했습니다.");
+        setTitle("로그인 실패!");
+        setColor("var(--Red)");
+      });
   };
 
   return (
@@ -85,14 +112,24 @@ const Home = () => {
       <HomeContainer>
         <HomeCard>
           <HomeCardTitle>이미 참여하시고 있으신가요?</HomeCardTitle>
-          <HomeCardInput placeholder="닉네임을 입력해주세요" maxLength={20} />
+          <HomeCardInput
+            placeholder="닉네임을 입력해주세요"
+            maxLength={20}
+            onInput={(e: any) => {
+              setNickname(e.target.value);
+            }}
+          />
           <HomeCardInput
             placeholder="본인 확인 코드를 입력해주세요"
             maxLength={8}
+            onInput={(e: any) => {
+              setCode(e.target.value);
+            }}
           />
           <Button
             onClick={() => {
-              navigate("/map");
+              setShowAlert(true);
+              login();
             }}>
             참여하기
           </Button>
