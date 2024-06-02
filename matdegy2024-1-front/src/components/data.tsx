@@ -40,7 +40,8 @@ const ProblemCodeToTitle: { [key: number]: string } = {
   11: "Attack",
   12: "Guess",
   13: "Sponsorship",
+  14: "Codeforces",
 };
-const ProblemList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+const ProblemList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
 
 export { problem, ProblemCodeToTitle, ProblemList };
