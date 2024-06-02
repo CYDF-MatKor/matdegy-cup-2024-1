@@ -21,8 +21,12 @@ const FlyLetter = ({
 }) => {
   return (
     <LetterContainer
+      tabIndex={-1}
       top={top}
       left={left}
+      onKeyDown={(e: any) => {
+        e.preventDefault();
+      }}
       onClick={(e: any) => {
         setIsAlert(!isAlert);
         console.log("clicked");
