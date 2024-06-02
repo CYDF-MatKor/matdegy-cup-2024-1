@@ -220,7 +220,8 @@ const AnswerPage = ({
 
   return (
     <PageLayout>
-      순서대로 드래그해서 정렬해주세요
+      순서대로 드래그해서 정렬해주세요 <br /> 드래그 한 곳으로 상자가 이동하고,
+      나머지는 한 칸씩 밀립니다.
       <BackButton onClick={() => setPage(1)}>
         {"<< "}
         back
@@ -296,10 +297,11 @@ const ColorInput = styled.input.attrs({ type: "color" })`
 
 const ColorListLayout = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(10, 1fr);
   gap: 10px;
   border: 3px solid var(--White);
   padding: 10px;
+  margin-bottom: 20px;
 `;
 
 const ColorBox = styled.button<{ tcolor: string }>`
@@ -335,7 +337,7 @@ const BackButton = styled.button`
   background-color: transparent;
   position: absolute;
   top: -10px;
-  left: -100px;
+  left: 0px;
   border: none;
 
   &:hover {

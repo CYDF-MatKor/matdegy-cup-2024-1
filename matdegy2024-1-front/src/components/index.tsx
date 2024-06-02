@@ -40,10 +40,13 @@ const Button = styled.div<{
   }
 `;
 
-const SubButton = styled(Link)`
+const SubButton = styled(Link)<{
+  top?: string;
+  left?: string;
+}>`
   position: absolute;
-  top: 20px;
-  left: 40px;
+  top: ${(props) => props.top || "20px"};
+  left: ${(props) => props.left || "40px"};
 
   color: var(--White);
   text-decoration: none;
@@ -53,6 +56,7 @@ const SubButton = styled(Link)`
   border-radius: 1rem;
   transition: background-color 0.3s;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  z-index: 1;
 
   &:hover {
     background-color: var(--MainPink);
