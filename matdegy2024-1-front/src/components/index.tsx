@@ -137,23 +137,26 @@ const AlertField = styled.div<{ show: boolean }>`
   height: 50%;
   max-width: 800px;
   min-width: 400px;
-  background-color: var(--White);
-  border-radius: 1rem;
+  background-color: #f3efff;
+  border-radius: 20px;
+  border: 5px dashed var(--MainPink);
+  padding: 40px;
   z-index: ${(props) => (props.show ? "101" : "-1")};
 `;
 
-const AlertTitle = styled.h1`
-  font-family: "SingleDay-Regular";
-  background: var(--MainMint);
+const AlertTitle = styled.div`
+  font-size: 55px;
+  font-weight: bold;
+  color: var(--MainPink);
+  text-decoration: underline;
+  text-shadow: 0 0 10px var(--White);
 `;
 
 const AlertText = styled.p`
   font-family: "SingleDay-Regular";
   color: var(--Black);
-  font-size: 1.5rem;
-  font-family: "SingleDay-Regular";
-  color: var(--Black);
-  font-size: 1.5rem;
+  font-size: 25px;
+  text-shadow: 0 0 10px var(--White);
 `;
 
 const Alert = ({

@@ -1,7 +1,14 @@
 import styled, { css, keyframes } from "styled-components";
 import { Link } from "react-router-dom";
 import { useState, useLayoutEffect } from "react";
-import { SubButton, Text, Alert, Button } from "../components";
+import {
+  SubButton,
+  Text,
+  Alert,
+  AlertText,
+  AlertTitle,
+  Button,
+} from "../components";
 import { problem, ProblemCodeToTitle, ProblemList } from "../components/data";
 import { IconList, connectList } from "../components/location";
 import { FlyLetter } from "../components/letter";
@@ -10,19 +17,6 @@ import Check from "../images/check.png";
 import { DataLoading } from "../utils/DataLoading";
 
 const Map = () => {
-  const [isrotating, setIsrotating] = useState(false);
-  const [showNumber, setShowNumber] = useState(false);
-  const [isLetter, setIsLetter] = useState(true);
-  const [isAlert, setIsAlert] = useState(false);
-
-  const handleDoubleClick = () => {
-    setIsrotating(!isrotating);
-  };
-  useLayoutEffect(() => {
-    setTimeout(() => {
-      setSolvedNumber([1, 7, 3, 5, 8, 2, 9, 12]);
-    }, 1000);
-  }, []);
   const [solvedNumber, setSolvedNumber] = useState<Array<number>>([-1]);
   const [activeNumber, setActiveNumber] = useState<Array<number>>([]);
 
@@ -36,8 +30,100 @@ const Map = () => {
     setActiveNumber(tmp);
   }, [solvedNumber]);
 
+  const msgs = [
+    "",
+    "Made by 똥우, 유림",
+    "Made by 유림, 똥우",
+    "Made by 똥우, 유림",
+    "Made by 유림, 똥우",
+    "Made by 똥우, 유림",
+    "Made by 유림, 똥우",
+    "Made by 똥우, 유림",
+    "Made by 유림, 똥우",
+    "Made by 똥우, 유림",
+    "Made by 유림, 똥우",
+    "이걸 10번이나 열어본 당신! 히든 문제를 푸셨어요!",
+  ];
+  const [isrotating, setIsrotating] = useState(false);
+  const [showNumber, setShowNumber] = useState(false);
+
+  const [isLetter, setIsLetter] = useState(true);
+  const [isAlert, setIsAlert] = useState(false);
+  const [hiddenalert, setHiddenalert] = useState(false);
+
+  const [msg, setMsg] = useState(msgs[0]);
+  const [idxmsg, setIdxmsg] = useState(0);
+
+  const topRange = [20, 600];
+  const leftRange = [30, 900];
+  const [top, setTop] = useState(
+    Math.floor(Math.random() * (topRange[1] - topRange[0] + 1)) + topRange[0]
+  );
+  const [left, setLeft] = useState(
+    Math.floor(Math.random() * (leftRange[1] - leftRange[0] + 1)) + leftRange[0]
+  );
+
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      setTop(
+        Math.floor(Math.random() * (topRange[1] - topRange[0] + 1)) +
+          topRange[0]
+      );
+      setLeft(
+        Math.floor(Math.random() * (leftRange[1] - leftRange[0] + 1)) +
+          leftRange[0]
+      );
+    }, 500000);
+  }, [top]);
+
+  useLayoutEffect(() => {
+    if (isAlert) setIdxmsg(idxmsg + 1);
+  }, [isAlert]);
+
+  useLayoutEffect(() => {
+    if (idxmsg < msgs.length) {
+      setMsg(msgs[idxmsg]);
+    }
+    if (idxmsg === msgs.length - 1) {
+      setIsLetter(false);
+      setHiddenalert(true);
+    }
+  }, [idxmsg]);
+
+  const handleDoubleClick = () => {
+    setIsrotating(!isrotating);
+  };
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      setSolvedNumber([1, 7, 3, 5, 8, 2, 9, 12]);
+    }, 1000);
+  }, []);
+
   return (
     <MapContainer>
+      <Alert
+        show={hiddenalert}
+        id="alert"
+        children={
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+            <AlertTitle>축하합니다!</AlertTitle>
+            <AlertText>모든 문제를 풀었습니다!</AlertText>
+            <Button
+              onClick={() => {
+                setHiddenalert(false);
+              }}>
+              확인
+            </Button>
+          </div>
+        }
+      />
+
       <NumberButton
         onMouseEnter={() => setShowNumber(true)}
         onMouseLeave={() => setShowNumber(false)}
@@ -63,6 +149,15 @@ const Map = () => {
               height: "440px",
               position: "relative",
             }}>
+            {isLetter && (
+              <FlyLetter
+                top={top + "px"}
+                left={left + "px"}
+                isAlert={isAlert}
+                setIsAlert={setIsAlert}
+                msg={msg}
+              />
+            )}
             <img src={MapBackground} alt="map" height={"440px"} />
             {IconList.map(
               (icon, i) => (

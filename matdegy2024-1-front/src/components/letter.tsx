@@ -1,43 +1,35 @@
 import styled from "styled-components";
 import Letter from "../images/letter.png";
-import { Button, Alert } from "./";
+import { Button, Alert, Text } from "./";
 import { useState } from "react";
 
 const FlyLetter = ({
   top = "20px",
   left = "30px",
+  isAlert,
+  setIsAlert,
+  msg,
+  setIdxmsg,
 }: {
   top?: string;
   left?: string;
+  isAlert?: boolean;
+  setIsAlert?: any;
+  msg?: string;
+  setMsg?: any;
+  setIdxmsg?: any;
 }) => {
-  const [isAlert, setIsAlert] = useState(false);
   return (
-    <>
-      <LetterContainer
-        top={top}
-        left={left}
-        onClick={() => {
-          setIsAlert(true);
-          console.log("clicked");
-        }}>
-        <img src={Letter} alt="letter" width={"100px"} height={"80px"} />
-      </LetterContainer>
-      <Alert
-        id="flyalert"
-        show={isAlert}
-        children={
-          <>
-            <h1>편지를 찾았습니다!</h1>
-            <Button
-              onClick={() => {
-                setIsAlert(false);
-              }}>
-              확인
-            </Button>
-          </>
-        }
-      />
-    </>
+    <LetterContainer
+      top={top}
+      left={left}
+      onClick={(e: any) => {
+        setIsAlert(!isAlert);
+        console.log("clicked");
+      }}>
+      {isAlert && <LetterText>{msg}</LetterText>}
+      <img src={Letter} alt="letter" width={"100px"} height={"80px"} />
+    </LetterContainer>
   );
 };
 
@@ -45,7 +37,7 @@ const LetterContainer = styled.button<{
   top: string;
   left: string;
 }>`
-  position: absolute;
+  position: fixed;
   top: ${(props) => props.top};
   left: ${(props) => props.left};
   background-color: transparent;
@@ -54,7 +46,7 @@ const LetterContainer = styled.button<{
   z-index: 100;
   cursor: pointer;
   transition: all 0.2s ease;
-  animation: vibrate 1s infinite, fly 15s infinite;
+  animation: vibrate 0.5s infinite;
 
   @keyframes vibrate {
     0% {
@@ -68,33 +60,6 @@ const LetterContainer = styled.button<{
     }
   }
 
-  @keyframes fly {
-    0% {
-      transform: translateY(0);
-    }
-    10% {
-      transform: translateX(400px) translateY(200px);
-    }
-    20% {
-      transform: translateY(200px) translateX(200px);
-    }
-    30% {
-      transform: translateX(100px) translateY(300px);
-    }
-    50% {
-      transform: translateX(800px) translateY(50px);
-    }
-    70% {
-      transform: translateX(1000px) translateY(600px);
-    }
-    80% {
-      transform: translateX(200px) translateY(500px);
-    }
-    100% {
-      transform: translateY(0);
-    }
-  }
-
   &:active {
     animation: none;
     border: none;
@@ -103,6 +68,18 @@ const LetterContainer = styled.button<{
   &:focus {
     outline: none;
   }
+`;
+
+const LetterText = styled.div`
+  white-space: nowrap;
+  position: absolute;
+  top: 10px;
+  left: 100px;
+  color: var(--White);
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 10px;
+  font-size: 2rem;
+  border-radius: 10px;
 `;
 
 export { FlyLetter };
