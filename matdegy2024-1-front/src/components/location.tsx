@@ -81,7 +81,7 @@ const IconList = [
   {
     idx: 11,
     icon: Attack,
-    x: "510px",
+    x: "500px",
     y: "350px",
   },
   {

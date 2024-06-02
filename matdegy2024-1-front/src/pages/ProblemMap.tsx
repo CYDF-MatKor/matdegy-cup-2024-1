@@ -123,7 +123,6 @@ const Map = () => {
           </div>
         }
       />
-
       <NumberButton
         onMouseEnter={() => setShowNumber(true)}
         onMouseLeave={() => setShowNumber(false)}
@@ -135,7 +134,7 @@ const Map = () => {
         랭킹보기
       </SubButton>
       <ContentContainer
-        isRotating={isrotating}
+        isrotating={isrotating}
         onDoubleClick={handleDoubleClick}>
         <TitleText>
           "<span className="bigM">M</span>atdegy <span className="bigM">M</span>
@@ -163,7 +162,6 @@ const Map = () => {
               (icon, i) => (
                 <ProblemLink
                   to={
-                    solvedNumber.includes(icon.idx) ||
                     activeNumber.includes(icon.idx)
                       ? "/problem/" + problem[icon.idx]
                       : "/map"
@@ -223,12 +221,14 @@ const MapContainer = styled.div`
   align-items: center;
   justify-content: center;
   -webkit-user-select: none;
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  min-width: 100vw;
+  width: max-content;
+  height: max-content;
 `;
 
 const ContentContainer = styled.div<{
-  isRotating: boolean;
+  isrotating: boolean;
 }>`
   display: flex;
   flex-direction: column;
@@ -240,11 +240,11 @@ const ContentContainer = styled.div<{
   width: 1300px;
   height: 650px;
 
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.4);
   border-radius: 20px;
 
-  ${({ isRotating }) =>
-    isRotating &&
+  ${({ isrotating }) =>
+    isrotating &&
     css`
       animation: ${keyframes`
       0% {

@@ -13,6 +13,8 @@ const Pages = styled.div`
   justify-content: center;
   max-width: 1600px;
   min-height: 100vh;
+  width: max-content;
+  height: max-content;
 `;
 
 function App() {

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 const Button = styled.div<{
   width?: string;
@@ -133,7 +134,7 @@ const AlertField = styled.div<{ show: boolean }>`
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  width: 50%;
+  width: 40%;
   height: 50%;
   max-width: 800px;
   min-width: 400px;
@@ -141,7 +142,7 @@ const AlertField = styled.div<{ show: boolean }>`
   border-radius: 20px;
   border: 5px dashed var(--MainPink);
   padding: 40px;
-  z-index: ${(props) => (props.show ? "101" : "-1")};
+  z-index: ${(props) => (props.show ? "101" : "-2")};
 `;
 
 const AlertTitle = styled.div`
@@ -163,15 +164,26 @@ const Alert = ({
   show,
   id,
   children,
+  audio = true,
 }: {
   show: boolean;
   id: string;
   children: JSX.Element;
+  audio?: boolean;
 }) => {
+  useEffect(() => {
+    if (audio && show) {
+      const audio = new Audio("/api/audio/alert.mp3");
+      audio.play();
+    }
+  }, [audio, show]);
+
   return (
-    <AlertBackground id={id} show={show}>
-      <AlertField show={show}>{children}</AlertField>
-    </AlertBackground>
+    show && (
+      <AlertBackground id={id} show={show}>
+        <AlertField show={show}>{children}</AlertField>
+      </AlertBackground>
+    )
   );
 };
 
