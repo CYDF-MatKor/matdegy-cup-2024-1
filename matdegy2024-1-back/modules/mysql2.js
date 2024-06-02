@@ -10,7 +10,7 @@ const nicknameDuplicateCheck = async (nickname) => {
     const result = await db("users").where({ nickname }).select("nickname");
     return { isdup: result.length > 0 };
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return { error: true };
   }
 };
@@ -27,7 +27,7 @@ const createUser = async (nickname) => {
       return { success: false };
     }
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return { error: true };
   }
 };
@@ -41,7 +41,7 @@ const getUser = async ({ nickname, code }) => {
       return { uid: null };
     }
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return { uid: null };
   }
 };
@@ -60,7 +60,7 @@ const compareAnswer = async ({ title, answer }) => {
       return { correct: false, error: false };
     }
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return { correct: false, error: true };
   }
 };
@@ -74,7 +74,7 @@ const getUserCreateTime = async ({ uid }) => {
       return { created_at: null };
     }
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return { created_at: null };
   }
 };
@@ -84,7 +84,7 @@ const checkSolve = async ({ uid, pid }) => {
     const result = await db("solve").where({ uid, pid }).select("time");
     return result.length > 0;
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return false;
   }
 };
@@ -108,7 +108,7 @@ const addSolve = async ({ uid, pid }) => {
       return { success: false, error: false };
     }
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return { success: false, error: true };
   }
 };
@@ -122,7 +122,7 @@ const getMsg = async ({ pid }) => {
       return { message: null, error: false };
     }
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return { message: null, error: true };
   }
 };
@@ -136,7 +136,7 @@ const getPID = async ({ title }) => {
       return { pid: null };
     }
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return { pid: null };
   }
 };
@@ -146,7 +146,7 @@ const addLoginToUser = async ({ uid, login }) => {
     const result = await db("users").where({ uid }).update({ login: login });
     return result > 0;
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return false;
   }
 };
@@ -156,7 +156,7 @@ const checkLogin = async ({ uid, login }) => {
     const result = await db("users").where({ uid, login }).select("uid");
     return result.length > 0;
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return false;
   }
 };
@@ -170,7 +170,7 @@ const getAnswer = async ({ pid }) => {
       return { answer: null };
     }
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return { answer: null };
   }
 };
@@ -182,7 +182,7 @@ const makeSQLInjection = async ({ pid, query }) => {
       .whereRaw("`answer` = '" + query + "'");
     return result;
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     return null;
   }
 };

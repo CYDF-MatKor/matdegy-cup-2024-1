@@ -20,7 +20,7 @@ module.exports = () => {
             return done(null, false, { message: "Incorrect nickname or code" });
           }
         } catch (e) {
-          logger.error(e);
+          logger.error({ message: e });
           return done(e);
         }
       }

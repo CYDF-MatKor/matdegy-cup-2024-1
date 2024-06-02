@@ -135,7 +135,7 @@ router.get("/:title", async function (req, res, next) {
           return;
         }
       } catch (e) {
-        logger.error(e);
+        logger.error({ message: e });
         res.status(500).send("Internal Server Error");
         return;
       }
@@ -174,7 +174,7 @@ router.get("/:title", async function (req, res, next) {
             return;
           }
         } catch (e) {
-          logger.error(e);
+          logger.error({ message: e });
           res.status(500).send("Internal Server Error");
           return;
         }
@@ -207,7 +207,7 @@ router.get("/:title", async function (req, res, next) {
             return;
           }
         } catch (e) {
-          logger.error(e);
+          logger.error({ message: e });
           res.status(500).send("Internal Server Error");
           return;
         }
@@ -256,7 +256,7 @@ router.get("/:title", async function (req, res, next) {
             }
           }
         } catch (e) {
-          logger.error(e);
+          logger.error({ message: e });
           res.status(500).send("Internal Server Error");
           return;
         }
@@ -310,7 +310,7 @@ router.get("/:title", async function (req, res, next) {
             return;
           }
         } catch (e) {
-          logger.error(e);
+          logger.error({ message: e });
           res.status(500).send("Internal Server Error");
           return;
         }
@@ -347,7 +347,7 @@ router.get("/:title", async function (req, res, next) {
             }
           }
         } catch (e) {
-          logger.error(e);
+          logger.error({ message: e });
           res.status(500).send("Internal Server Error");
           return;
         }
@@ -424,7 +424,7 @@ router.get("/:title", async function (req, res, next) {
             }
           }
         } catch (e) {
-          logger.error(e);
+          logger.error({ message: e });
           res.status(500).send("Internal Server Error");
           return;
         }
@@ -478,7 +478,7 @@ router.get("/:title", async function (req, res, next) {
             return;
           }
         } catch (e) {
-          logger.error(e);
+          logger.error({ message: e });
           res.status(500).send("Internal Server Error");
           return;
         }
@@ -532,7 +532,7 @@ router.get("/:title", async function (req, res, next) {
             return;
           }
         } catch (e) {
-          logger.error(e);
+          logger.error({ message: e });
           res.status(500).send("Internal Server Error");
           return;
         }
@@ -540,7 +540,7 @@ router.get("/:title", async function (req, res, next) {
       return;
     }
   } catch (e) {
-    logger.error(e);
+    logger.error({ message: e });
     res.status(500).send("Internal Server Error");
     return;
   }
