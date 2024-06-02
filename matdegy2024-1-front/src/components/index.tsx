@@ -68,7 +68,7 @@ const Input = styled.input<{
   height: ${(props) => props.height || "3rem"};
 
   font-size: ${(props) => props.fontSize || "1.5rem"};
-  font-family: "KaTeX_Main";
+  font-family: "SingleDay-Regular";
 
   display: flex;
   flex-direction: column;
@@ -133,7 +133,7 @@ const AlertField = styled.div<{ show: boolean }>`
 
 const AlertTitle = styled.h1`
   font-family: "SingleDay-Regular";
-  background: var(--Gray);
+  background: var(--MainMint);
 `;
 
 const AlertText = styled.p`
