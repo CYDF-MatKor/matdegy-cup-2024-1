@@ -68,8 +68,8 @@ const Input = styled.input<{
   height?: string;
   fontSize?: string;
 }>`
-  width: ${(props) => props.width || "10rem"};
-  height: ${(props) => props.height || "3rem"};
+  width: ${(props) => props.width || "300px"};
+  height: ${(props) => props.height || "50px"};
 
   font-size: ${(props) => props.fontSize || "1.5rem"};
   font-family: "SingleDay-Regular";
@@ -80,11 +80,18 @@ const Input = styled.input<{
   align-items: center;
   text-align: center;
 
+  margin: 20px;
   background-color: var(--White);
   color: var(--Black);
+  border: 4px solid var(--MainPink);
   border-radius: 0.5rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  outline: 0;
+
+  &::placeholder {
+    color: var(--Gray);
+  }
   user-select: none;
-  margin: 0.5rem;
 `;
 
 const Title = styled.h1``;

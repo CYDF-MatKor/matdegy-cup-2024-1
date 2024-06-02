@@ -1,22 +1,39 @@
 import styled, { css, keyframes } from "styled-components";
 import { Link } from "react-router-dom";
-import { useState } from "react";
-import { SubButton, Text } from "../components";
+import { useState, useLayoutEffect } from "react";
+import { SubButton, Text, Alert, Button } from "../components";
 import { problem, ProblemCodeToTitle, ProblemList } from "../components/data";
-import { IconList } from "../components/location";
+import { IconList, connectList } from "../components/location";
+import { FlyLetter } from "../components/letter";
 import MapBackground from "../images/map-background.png";
 import Check from "../images/check.png";
+import { DataLoading } from "../utils/DataLoading";
 
 const Map = () => {
-  const [isRotating, setIsRotating] = useState(true);
+  const [isrotating, setIsrotating] = useState(false);
   const [showNumber, setShowNumber] = useState(false);
+  const [isLetter, setIsLetter] = useState(true);
+  const [isAlert, setIsAlert] = useState(false);
 
   const handleDoubleClick = () => {
-    setIsRotating(!isRotating);
+    setIsrotating(!isrotating);
   };
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      setSolvedNumber([1, 7, 2, 9, 12]);
+    }, 1000);
+  }, []);
+  const [solvedNumber, setSolvedNumber] = useState<Array<number>>([-1]);
+  const [activeNumber, setActiveNumber] = useState<Array<number>>([]);
 
-  const solvedNumber = [1, 3, 2, 9];
-  const activeNumber = [6, 7, 12];
+  useLayoutEffect(() => {
+    setActiveNumber([
+      1,
+      ...Array.from(
+        new Set(solvedNumber.map((s) => connectList[s - 1]).flat())
+      ),
+    ]);
+  }, [solvedNumber]);
 
   return (
     <MapContainer>
@@ -30,73 +47,75 @@ const Map = () => {
       <SubButton to="/rank" top="20px" left="calc(100vw - 300px)">
         랭킹보기
       </SubButton>
-
       <ContentContainer
-        isRotating={isRotating}
+        isRotating={isrotating}
         onDoubleClick={handleDoubleClick}>
         <TitleText>
           "<span className="bigM">M</span>atdegy <span className="bigM">M</span>
           ap"
         </TitleText>
-        <div
-          style={{
-            height: "440px",
-            position: "relative",
-          }}>
-          <img src={MapBackground} alt="map" height={"440px"} />
-          {IconList.map(
-            (icon, idx) => (
-              <ProblemLink
-                to={"/problem/" + problem[icon.idx]}
-                show={showNumber}
-                onClick={(event) =>
-                  !(
-                    activeNumber.includes(icon.idx) ||
+        {solvedNumber.includes(-1) ? (
+          <DataLoading />
+        ) : (
+          <div
+            style={{
+              height: "440px",
+              position: "relative",
+            }}>
+            <img src={MapBackground} alt="map" height={"440px"} />
+            {IconList.map(
+              (icon, i) => (
+                <ProblemLink
+                  to={
+                    solvedNumber.includes(icon.idx) ||
+                    activeNumber.includes(icon.idx)
+                      ? "/problem/" + problem[icon.idx]
+                      : "/map"
+                  }
+                  show={showNumber}
+                  onClick={(event) =>
+                    !activeNumber.includes(icon.idx) && event.preventDefault()
+                  }
+                  key={i}
+                  top={icon.y}
+                  left={icon.x}
+                  status={
                     solvedNumber.includes(icon.idx)
-                  ) && event.preventDefault()
-                }
-                key={idx}
-                top={icon.y}
-                left={icon.x}
-                status={
-                  solvedNumber.includes(icon.idx)
-                    ? "solved"
-                    : activeNumber.includes(icon.idx)
-                    ? "selectable"
-                    : "locked"
-                }>
-                <img
-                  alt="icon"
-                  src={icon.icon}
-                  width={"100%"}
-                  key={idx}
-                  style={{
-                    filter:
-                      solvedNumber.includes(icon.idx) ||
-                      activeNumber.includes(icon.idx)
+                      ? "solved"
+                      : activeNumber.includes(icon.idx)
+                      ? "selectable"
+                      : "locked"
+                  }>
+                  <img
+                    alt="icon"
+                    src={icon.icon}
+                    width={"100%"}
+                    style={{
+                      filter: activeNumber.includes(icon.idx)
                         ? "none"
                         : "grayscale(100%)",
-                  }}
-                />
-                <img
-                  src={Check}
-                  alt="check"
-                  width={"120%"}
-                  style={{
-                    position: "absolute",
-                    top: "5px",
-                    left: "0",
-                    display: solvedNumber.includes(icon.idx) ? "block" : "none",
-                  }}
-                />
-                <NumberText key={idx} show={showNumber}>
-                  {icon.idx}
-                </NumberText>
-              </ProblemLink>
-            ),
-            [isRotating]
-          )}
-        </div>
+                    }}
+                  />
+                  <img
+                    src={Check}
+                    alt="check"
+                    width={"120%"}
+                    style={{
+                      position: "absolute",
+                      top: "5px",
+                      left: "0",
+                      display: solvedNumber.includes(icon.idx)
+                        ? "block"
+                        : "none",
+                    }}
+                  />
+                  <NumberText show={showNumber}>{icon.idx}</NumberText>
+                </ProblemLink>
+              ),
+              [isrotating]
+            )}
+          </div>
+        )}
       </ContentContainer>
     </MapContainer>
   );
@@ -141,7 +160,7 @@ const ContentContainer = styled.div<{
       100% {
         transform: rotate(0deg);
       }
-    `} 5s linear infinite;
+    `} 7s linear infinite;
     `}
 `;
 
@@ -192,6 +211,7 @@ const NumberButton = styled.button<{
   color: var(--White);
   text-decoration: none;
   font-size: 1.5rem;
+  border: none;
 
   padding: 0.5rem 1rem;
   border-radius: 1rem;
@@ -202,6 +222,10 @@ const NumberButton = styled.button<{
 
   &:hover {
     background-color: var(--MainPink);
+  }
+
+  &:focus {
+    outline: none;
   }
 `;
 
