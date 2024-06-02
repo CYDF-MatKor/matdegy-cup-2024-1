@@ -20,19 +20,20 @@ const Map = () => {
   };
   useLayoutEffect(() => {
     setTimeout(() => {
-      setSolvedNumber([1, 7, 2, 9, 12]);
+      setSolvedNumber([1, 7, 3, 5, 8, 2, 9, 12]);
     }, 1000);
   }, []);
   const [solvedNumber, setSolvedNumber] = useState<Array<number>>([-1]);
   const [activeNumber, setActiveNumber] = useState<Array<number>>([]);
 
   useLayoutEffect(() => {
-    setActiveNumber([
-      1,
-      ...Array.from(
-        new Set(solvedNumber.map((s) => connectList[s - 1]).flat())
-      ),
-    ]);
+    const tmp = [];
+    for (let i = 0; i < connectList.length; i++) {
+      if (connectList[i].every((v) => solvedNumber.includes(v))) {
+        tmp.push(i + 1);
+      }
+    }
+    setActiveNumber(tmp);
   }, [solvedNumber]);
 
   return (
