@@ -187,6 +187,34 @@ const makeSQLInjection = async ({ pid, query }) => {
   }
 };
 
+const getProblemsUserSolved = async ({ uid }) => {
+  try {
+    const result = await db("solve")
+      .where({ uid })
+      .select("pid", "time", "elapsed_time");
+    return result;
+  } catch (e) {
+    logger.error({ message: e });
+    return null;
+  }
+};
+
+const getUserTimeOffset = async ({ uid }) => {
+  try {
+    const standard = "2024-06-04 18:00:00";
+    const user_create_time = await getUserCreateTime({ uid });
+    const timediff = await db.raw(
+      `SELECT TIMESTAMPDIFF(SECOND, ?, ?) as timediff`,
+      [standard, user_create_time.created_at]
+    );
+    console.log(timediff);
+    return Math.max(timediff[0][0].timediff, 0);
+  } catch (e) {
+    logger.error({ message: e });
+    return null;
+  }
+};
+
 module.exports = {
   nicknameDuplicateCheck,
   createUser,
@@ -200,4 +228,6 @@ module.exports = {
   checkLogin,
   getAnswer,
   makeSQLInjection,
+  getProblemsUserSolved,
+  getUserTimeOffset,
 };

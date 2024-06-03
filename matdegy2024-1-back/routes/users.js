@@ -1,6 +1,11 @@
 var express = require("express");
 var router = express.Router();
-const { nicknameDuplicateCheck, createUser } = require("../modules/mysql2");
+const {
+  nicknameDuplicateCheck,
+  createUser,
+  getProblemsUserSolved,
+  getUserTimeOffset,
+} = require("../modules/mysql2");
 const { parse } = require("node-html-parser");
 const puppeteer = require("puppeteer");
 const passport = require("passport");
@@ -81,5 +86,26 @@ router.get("/logout", function (req, res) {
   });
 });
 
-module.exports = router;
+router.get("/solve", async function (req, res, next) {
+  if (!req.user) {
+    res.status(401).json({ message: "Not Logged In" });
+    return;
+  }
+  try {
+    const uid = req.user.uid;
+    const result = await getProblemsUserSolved({ uid });
+    if (!result) {
+      res.status(500).json({ message: "Internal Server Error" });
+      return;
+    }
+    const timeOffset = await getUserTimeOffset({ uid });
+    result.forEach((element) => {
+      element.elapsed_time += timeOffset;
+    });
+    res.json(result);
+  } catch (e) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
 
+module.exports = router;

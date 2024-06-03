@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `nickname` varchar(20) NOT NULL UNIQUE,
   `code` INT(8) NOT NULL,
   `login` varchar(2),
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `is_tester` BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS `problems` (

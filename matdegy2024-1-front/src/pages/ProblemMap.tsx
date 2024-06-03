@@ -1,6 +1,6 @@
 import styled, { css, keyframes } from "styled-components";
-import { Link } from "react-router-dom";
-import { useState, useLayoutEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useLayoutEffect, useEffect } from "react";
 import {
   SubButton,
   Text,
@@ -15,8 +15,10 @@ import { FlyLetter } from "../components/letter";
 import MapBackground from "../images/map-background.png";
 import Check from "../images/check.png";
 import { DataLoading } from "../utils/DataLoading";
+import axios from "axios";
 
 const Map = () => {
+  const navigate = useNavigate();
   const [solvedNumber, setSolvedNumber] = useState<Array<number>>([-1]);
   const [activeNumber, setActiveNumber] = useState<Array<number>>([]);
 
@@ -53,9 +55,74 @@ const Map = () => {
 
   const [msg, setMsg] = useState(msgs[0]);
   const [idxmsg, setIdxmsg] = useState(0);
+  const [topRange, setTopRange] = useState([20, window.innerHeight - 20]);
+  const [leftRange, setLeftRange] = useState([30, window.innerWidth - 30]);
+  const [isCorrect, setIsCorrect] = useState<boolean | null | undefined>(null);
+  const [alertComponent, setAlertComponent] = useState<JSX.Element>(
+    <DataLoading />
+  );
+  const [rmsg, setRmsg] = useState<string>("");
+  const [show, setShow] = useState<boolean>(false);
 
-  const topRange = [20, 600];
-  const leftRange = [30, 900];
+  useEffect(() => {
+    if (isCorrect === null) {
+      setAlertComponent(<DataLoading />);
+    } else if (isCorrect === true) {
+      setAlertComponent(
+        <>
+          <AlertTitle
+            style={{
+              color: "var(--Green)",
+            }}>
+            Correct!
+          </AlertTitle>
+          <AlertText>{rmsg}</AlertText>
+          <Button
+            onClick={() => {
+              navigate("/map");
+              setShow(false);
+            }}>
+            Next
+          </Button>
+        </>
+      );
+    } else if (isCorrect === false) {
+      setAlertComponent(
+        <>
+          <AlertTitle
+            style={{
+              color: "var(--Red)",
+            }}>
+            Wrong!
+          </AlertTitle>
+          <Button onClick={() => setShow(false)}>Close</Button>
+        </>
+      );
+    } else {
+      setAlertComponent(
+        <>
+          <AlertTitle
+            style={{
+              color: "var(--Red)",
+            }}>
+            Wrong!
+          </AlertTitle>
+          <Button onClick={() => setShow(false)}>Close</Button>
+        </>
+      );
+    }
+  }, [isCorrect, rmsg]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setTopRange([20, window.innerHeight - 20]);
+      setLeftRange([30, window.innerWidth - 400]);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   const [top, setTop] = useState(
     Math.floor(Math.random() * (topRange[1] - topRange[0] + 1)) + topRange[0]
   );
@@ -73,7 +140,7 @@ const Map = () => {
         Math.floor(Math.random() * (leftRange[1] - leftRange[0] + 1)) +
           leftRange[0]
       );
-    }, 500000);
+    }, 3000);
   }, [top]);
 
   useLayoutEffect(() => {
@@ -82,11 +149,26 @@ const Map = () => {
 
   useLayoutEffect(() => {
     if (idxmsg < msgs.length) {
-      setMsg(msgs[idxmsg]);
+      setMsg(msgs[idxmsg] + ` - ${idxmsg}`);
     }
     if (idxmsg === msgs.length - 1) {
       setIsLetter(false);
-      setHiddenalert(true);
+      setIsCorrect(null);
+      setShow(true);
+      axios
+        .get("/api/submit/guess?answer=밥솥")
+        .then((res) => {
+          if (res.data.correct) {
+            setIsCorrect(true);
+            setRmsg(res.data.message);
+            setIdxmsg(idxmsg + 1);
+          } else {
+            setIsCorrect(false);
+          }
+        })
+        .catch((err) => {
+          setIsCorrect(undefined);
+        });
     }
   }, [idxmsg]);
 
@@ -94,10 +176,27 @@ const Map = () => {
     setIsrotating(!isrotating);
   };
   useLayoutEffect(() => {
-    setTimeout(() => {
-      setSolvedNumber([1, 7, 3, 5, 8, 2, 9, 12]);
-    }, 1000);
+    axios
+      .get("/api/users/solve")
+      .then((res) => {
+        const tmp = [];
+        for (let i = 0; i < res.data.length; i++) {
+          tmp.push(res.data[i].pid);
+        }
+        setSolvedNumber(tmp);
+      })
+      .catch((res) => {
+        console.log(res);
+      });
   }, []);
+
+  useLayoutEffect(() => {
+    if (solvedNumber.includes(12) || !activeNumber.includes(12)) {
+      setIsLetter(false);
+    } else {
+      setIsLetter(true);
+    }
+  }, [solvedNumber, activeNumber]);
 
   return (
     <MapContainer>
@@ -211,6 +310,7 @@ const Map = () => {
           </div>
         )}
       </ContentContainer>
+      <Alert show={show} id="alert" children={alertComponent} />
     </MapContainer>
   );
 };
