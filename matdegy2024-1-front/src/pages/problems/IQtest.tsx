@@ -124,7 +124,15 @@ const SelectColorPage = ({
 }) => {
   return (
     <PageLayout>
-      색을 하나 골라주세요.
+      <Text>색을 하나 골라주세요.</Text>
+      <Text
+        style={{
+          color: "var(--MainMint)",
+        }}>
+        이 문제를 풀기 위해서는 소리를 켜주세요.
+        <br />
+        소리를 켠 후 다음을 누르면 3초 후에 문제가 시작됩니다.
+      </Text>
       <ColorInput
         defaultValue={color}
         onChange={(e) => {

@@ -12,6 +12,8 @@ import { default as ProblemAttack } from "./Attack";
 import { default as ProblemGuess } from "./Guess";
 import { default as ProblemSponsorship } from "./Sponsorship";
 import { default as ProblemCodeforces } from "./Codeforces";
+import { default as ProblemRoad } from "./Road";
+import { default as ProblemFinal } from "./Final";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Navigate } from "react-router-dom";
@@ -40,6 +42,8 @@ const Problems = () => {
     12: <ProblemGuess />,
     13: <ProblemSponsorship />,
     14: <ProblemCodeforces />,
+    15: <ProblemRoad />,
+    16: <ProblemFinal />,
   };
   if (!problemcode) return <Navigate to="/error/404" replace={true} />;
   if (!ProblemList.includes(problemcode))

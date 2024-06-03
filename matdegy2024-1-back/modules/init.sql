@@ -65,4 +65,6 @@ INSERT INTO `problems` (`number`, `title`, `answer`, `message`) VALUES
   (609, 'word9', '입체적인물', ''),
   (610, 'word10', '조직적행동', ''),
   (611, 'word11', '현대모비스', '암호화된 문자열을 해독하셨나요?'),
-  (100, 'letter', 'Made_by_kidw0124_leeyou6757', '이걸 10번도 더 열어보다니! 진짜 숨겨진 문제를 푸셨어요.');
+  (100, 'letter', 'Made_by_kidw0124_leeyou6757', '제1회 맷데기컵은 동우와 재우가 만들었어요'),
+  (15, 'road', 'bug_c4mp_messssi', ''),
+  (16, 'final', 'c0ngr4tul4t10ns', '축하합니다! 제2회 MatDegy Cup을 모두 풀어내셨습니다!');

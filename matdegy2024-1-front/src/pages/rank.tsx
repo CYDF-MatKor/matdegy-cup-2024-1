@@ -41,6 +41,11 @@ const Rank = () => {
           tmp.push({
             nickname: res.data[key].nickname,
             solved: res.data[key].solved,
+            solved_count: res.data[key].solved.reduce(
+              (acc: number, cur: any) =>
+                acc + (cur.pid >= 1 && cur.pid <= 16 ? 1 : 0),
+              0
+            ),
             elapsed_max: Math.max(
               0,
               ...res.data[key].solved.map((e: any) => e.elapsed_time)
@@ -57,14 +62,14 @@ const Rank = () => {
         });
         if (sortByOrigin)
           tmp.sort((a, b) => {
-            if (a.solved.length !== b.solved.length)
-              return b.solved.length - a.solved.length;
+            if (a.solved_count !== b.solved_count)
+              return b.solved_count - a.solved_count;
             return a.elapsed_sum - b.elapsed_sum;
           });
         else
           tmp.sort((a, b) => {
-            if (a.solved.length !== b.solved.length)
-              return b.solved.length - a.solved.length;
+            if (a.solved_count !== b.solved_count)
+              return b.solved_count - a.solved_count;
             return a.elapsed_max - b.elapsed_max;
           });
 
@@ -125,7 +130,7 @@ const Rank = () => {
           }}>
           <RankDiv>{idx + 1}</RankDiv>
           <RankDiv>{rank.nickname}</RankDiv>
-          <RankDiv>{rank.solved.length}</RankDiv>
+          <RankDiv>{rank.solved_count}</RankDiv>
           <RankDiv>
             {sortByOrigin
               ? getStringFromSeconds(rank.elapsed_sum)

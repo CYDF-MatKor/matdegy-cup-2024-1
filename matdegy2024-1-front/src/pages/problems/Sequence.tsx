@@ -119,6 +119,7 @@ const Sequence = () => {
 
   useLayoutEffect(() => {
     // random permutation 0~4
+    if (idx === -1 || idx >= problists.length) return;
     const perm = Array.from({ length: 5 }, (_, i) => i);
     for (let i = 0; i < 5; i++) {
       const j = Math.floor(Math.random() * 5);

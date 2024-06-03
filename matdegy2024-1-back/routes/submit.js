@@ -46,6 +46,7 @@ const title_naive_list = [
   "word",
   "sequence",
   "iqtest",
+  "road",
 ];
 
 const title_list = [
@@ -79,6 +80,8 @@ const title_list = [
   "word9",
   "word10",
   "word11",
+  "road",
+  "final",
 ];
 
 router.get("/:title", async function (req, res, next) {
@@ -463,7 +466,61 @@ router.get("/:title", async function (req, res, next) {
           res.status(500).send("Internal Server Error");
           return;
         }
-      } else res.status(200).send("Not Implemented");
+      } else if (title === "final") {
+        const submissionID = req.query.submissionID;
+        if (!submissionID) {
+          res.status(400).send("Bad Request");
+          return;
+        }
+        try {
+          const { result } = await codeforces({
+            submissionID,
+            title: "D - Final",
+          });
+          if (result === "success") {
+            const time = await addSolve({ uid, pid });
+            if (time.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            const msg = await getMsg({ pid });
+            if (msg.error) {
+              res.status(500).send("Internal Server Error");
+              return;
+            }
+            res.status(200).json({
+              correct: true,
+              message: msg.message || "",
+            });
+            return;
+          } else if (result === "Not Accepted") {
+            res.status(200).json({
+              correct: false,
+              message: "Not Accepted",
+            });
+            return;
+          } else if (result === "Not that Problem") {
+            res.status(200).json({
+              correct: false,
+              message: "Not that Problem",
+            });
+            return;
+          } else if (result === "Wrong submissionID or try again") {
+            res.status(200).json({
+              correct: false,
+              message: "Wrong submissionID or try again",
+            });
+            return;
+          } else {
+            res.status(500).send("Internal Server Error");
+            return;
+          }
+        } catch (e) {
+          logger.error({ message: e });
+          res.status(500).send("Internal Server Error");
+          return;
+        }
+      } else res.status(200).send("Wrong Title");
       return;
     }
   } catch (e) {
