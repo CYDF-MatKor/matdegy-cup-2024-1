@@ -158,7 +158,7 @@ const Mountain = () => {
         </>
       );
     }
-  }, [isCorrect]);
+  }, [isCorrect, msg]);
 
   return (
     <ProblemEachField>

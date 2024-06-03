@@ -87,7 +87,7 @@ const Heights = () => {
         </>
       );
     }
-  }, [isCorrect]);
+  }, [isCorrect, msg]);
 
   useEffect(() => {
     axios

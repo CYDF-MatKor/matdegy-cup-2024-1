@@ -5,6 +5,8 @@ const {
   createUser,
   getProblemsUserSolved,
   getUserTimeOffset,
+  getAllRank,
+  getAllUsers,
 } = require("../modules/mysql2");
 const { parse } = require("node-html-parser");
 const puppeteer = require("puppeteer");
@@ -104,6 +106,40 @@ router.get("/solve", async function (req, res, next) {
     });
     res.json(result);
   } catch (e) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+});
+
+router.get("/rank", async function (req, res, next) {
+  try {
+    const result = await getAllRank();
+    if (result.error) {
+      res.status(500).json({ message: "Internal Server Error" });
+      return;
+    }
+    const users = await getAllUsers();
+    if (users.error) {
+      res.status(500).json({ message: "Internal Server Error" });
+      return;
+    }
+    const usertores = {};
+    users.forEach(({ uid, nickname }) => {
+      usertores[uid] = {
+        nickname,
+        solved: [],
+      };
+    });
+    for (const { uid, pid, elapsed_time, time } of result) {
+      const userTimeOffset = await getUserTimeOffset({ uid });
+      usertores[uid].solved.push({
+        pid,
+        elapsed_time: elapsed_time + userTimeOffset,
+        time,
+      });
+    }
+    res.json(usertores);
+  } catch (e) {
+    console.error(e);
     res.status(500).json({ message: "Internal Server Error" });
   }
 });

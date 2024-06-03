@@ -43,6 +43,8 @@ const title_naive_list = [
   "word9",
   "word10",
   "word11",
+  "word",
+  "sequence",
   "iqtest",
 ];
 
@@ -223,37 +225,38 @@ router.get("/:title", async function (req, res, next) {
           if (!realAnswer.answer) {
             res.status(500).send("Internal Server Error");
             return;
-          } else if (realAnswer.answer === answer) {
-            const time = await addSolve({ uid, pid });
-            if (time.error) {
-              res.status(500).send("Internal Server Error");
-              return;
-            }
-            const msg = await getMsg({ pid });
-            if (msg.error) {
-              res.status(500).send("Internal Server Error");
-              return;
-            }
-            res.status(200).json({
-              correct: true,
-              message: msg.message || "",
-            });
-            return;
           } else {
             const realAnswerTime = new Date(realAnswer.answer);
             const answerTime = new Date(answer);
+            console.log(realAnswerTime, answerTime);
+            console.log(realAnswerTime === answerTime);
             if (realAnswerTime < answerTime) {
               res.status(200).json({
                 correct: false,
                 message: "정답보다 느린 시간입니다.",
               });
               return;
-            } else {
+            } else if (realAnswerTime > answerTime) {
               res.status(200).json({
                 correct: false,
                 message: "정답보다 빠른 시간입니다.",
               });
               return;
+            } else {
+              const time = await addSolve({ uid, pid });
+              if (time.error) {
+                res.status(500).send("Internal Server Error");
+                return;
+              }
+              const msg = await getMsg({ pid });
+              if (msg.error) {
+                res.status(500).send("Internal Server Error");
+                return;
+              }
+              res.status(200).json({
+                correct: true,
+                message: msg.message || "",
+              });
             }
           }
         } catch (e) {

@@ -84,6 +84,10 @@ button:focus-visible {
   }
 }
 
+* {
+  user-select: none;
+}
+
 :root {
   --Black: #000000;
   --DarkNavy: #0e1c36;

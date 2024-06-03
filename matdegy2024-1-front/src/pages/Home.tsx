@@ -58,8 +58,8 @@ const Home = () => {
           {title === "Success!" && (
             <AlertText>코드를 다른 곳에 반드시 저장해 두세요!</AlertText>
           )}
-          {color === "var(--Green)" ? (
-            <Button onClick={() => navigate("/map")}>Go!</Button>
+          {title === "로그인 성공!" ? (
+            <Button onClick={() => (window.location.href = "/map")}>Go!</Button>
           ) : (
             <Button onClick={() => setShowAlert(false)}>Close</Button>
           )}

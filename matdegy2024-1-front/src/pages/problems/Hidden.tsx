@@ -1,8 +1,74 @@
 import styled from "styled-components";
-import { Button, Title, Text, ProblemEachField } from "../../components";
+import {
+  Button,
+  Title,
+  Text,
+  ProblemEachField,
+  AlertText,
+  AlertTitle,
+  Alert,
+} from "../../components";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { DataLoading } from "../../utils/DataLoading";
 
 const Hidden = () => {
+  const navigate = useNavigate();
+  const [isCorrect, setIsCorrect] = useState<boolean | null | undefined>(null);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertComponent, setAlertComponent] = useState<JSX.Element>(
+    <DataLoading />
+  );
+  const [msg, setMsg] = useState<string>("");
+  const [answer, setAnswer] = useState<string>("");
+
+  const checkAnswer = async () => {
+    setIsCorrect(null);
+    setShowAlert(true);
+    axios
+      .get("/api/submit/hidden?answer=" + answer.toUpperCase())
+      .then((res) => {
+        if (res.data.correct) {
+          setIsCorrect(true);
+          setMsg(res.data.message);
+        } else {
+          setIsCorrect(false);
+          setMsg(res.data.message);
+        }
+      })
+      .catch((res) => {
+        setIsCorrect(undefined);
+      });
+  };
+  useEffect(() => {
+    if (isCorrect === null) {
+      setAlertComponent(<DataLoading />);
+    } else if (isCorrect === true) {
+      setAlertComponent(
+        <>
+          <AlertTitle style={{ color: "var(--Green)" }}>Correct!</AlertTitle>
+          <AlertText>{msg}</AlertText>
+          <Button onClick={() => navigate("/map")}>Next</Button>
+        </>
+      );
+    } else if (isCorrect === false) {
+      setAlertComponent(
+        <>
+          <AlertTitle style={{ color: "var(--Red)" }}>Incorrect!</AlertTitle>
+          <Button onClick={() => setShowAlert(false)}>Close</Button>
+        </>
+      );
+    } else {
+      setAlertComponent(
+        <>
+          <AlertTitle style={{ color: "var(--Red)" }}>Error!</AlertTitle>
+          <AlertText>다시 시도해보세요!</AlertText>
+          <Button onClick={() => setShowAlert(false)}>Close</Button>
+        </>
+      );
+    }
+  }, [isCorrect, msg]);
   const [isFound, setIsFound] = useState(false);
   const [title, setTitle] = useState("404");
   const [text, setText] = useState("Page not found");
@@ -25,8 +91,10 @@ const Hidden = () => {
         maxLength={2}
         tabIndex={-1}
         onFocus={() => setIsFound(true)}
+        onInput={(e) => setAnswer(e.currentTarget.value)}
       />
-      {isFound && <Button>Submit</Button>}
+      {isFound && <Button onClick={checkAnswer}>Submit</Button>}
+      <Alert show={showAlert} id="hidden" children={alertComponent} />
     </ProblemEachField>
   );
 };

@@ -190,8 +190,13 @@ const makeSQLInjection = async ({ pid, query }) => {
 const getProblemsUserSolved = async ({ uid }) => {
   try {
     const result = await db("solve")
+      .join("problems", "solve.pid", "problems.pid")
       .where({ uid })
-      .select("pid", "time", "elapsed_time");
+      .select({
+        pid: "problems.number",
+        elapsed_time: "elapsed_time",
+        time: "time",
+      });
     return result;
   } catch (e) {
     logger.error({ message: e });
@@ -215,6 +220,37 @@ const getUserTimeOffset = async ({ uid }) => {
   }
 };
 
+const getAllRank = async () => {
+  try {
+    const result = await db("solve")
+      .join("users", "solve.uid", "users.uid")
+      .join("problems", "solve.pid", "problems.pid")
+      .select({
+        uid: "solve.uid",
+        pid: "problems.number",
+        elapsed_time: "solve.elapsed_time",
+        time: "solve.time",
+      })
+      .orderBy("solve.uid");
+    return result;
+  } catch (e) {
+    logger.error({ message: e });
+    return null;
+  }
+};
+
+const getAllUsers = async () => {
+  try {
+    const result = await db("users").select("uid", "nickname").where({
+      is_tester: false,
+    });
+    return result;
+  } catch (e) {
+    logger.error({ message: e });
+    return null;
+  }
+};
+
 module.exports = {
   nicknameDuplicateCheck,
   createUser,
@@ -230,4 +266,6 @@ module.exports = {
   makeSQLInjection,
   getProblemsUserSolved,
   getUserTimeOffset,
+  getAllRank,
+  getAllUsers,
 };

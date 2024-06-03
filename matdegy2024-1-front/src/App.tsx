@@ -1,11 +1,13 @@
-import { useState, useEffect } from "react";
-import { Route, Routes } from "react-router-dom";
+import { useState, useEffect, useLayoutEffect } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { styled } from "styled-components";
 
 import { Home, Map, Error, Problems, Rank } from "./pages";
 
 import { DataLoading } from "./utils/DataLoading";
 import "./App.css";
+import axios from "axios";
+import { Button } from "./components";
 
 const Pages = styled.div`
   display: flex;
@@ -18,26 +20,85 @@ const Pages = styled.div`
 `;
 
 function App() {
-  const [count, setCount] = useState(0);
-  const [nickname, setNickname] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLogin, setIsLogin] = useState<Boolean | null>(null);
+  const location = useLocation();
 
-  useEffect(() => {
-    setNickname(sessionStorage.getItem("nickname") || "nope");
-  }, []);
+  const checkLogin = async () => {
+    axios
+      .get("/api/users/solve")
+      .then((res) => {
+        setIsLoading(false);
+        setIsLogin(true);
+      })
+      .catch((res) => {
+        setIsLoading(false);
+        setIsLogin(false);
+      });
+  };
+
+  useLayoutEffect(() => {
+    checkLogin();
+  }, [location, location.pathname]);
+
+  const logout = async () => {
+    axios
+      .get("/api/users/logout")
+      .then((res) => {
+        window.location.href = "/";
+      })
+      .catch((res) => {
+        console.log(res);
+      });
+  };
 
   return (
     <>
       <Pages>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/map" element={<Map />} />
-          <Route path="/rank" element={<Rank />} />
-          <Route path="/problem/:problemurl" element={<Problems />} />
-          <Route
-            path="*"
-            element={<Error code={404} message="Page not found" />}
-          />
-        </Routes>
+        {isLogin === null ? (
+          <DataLoading size={300} />
+        ) : (
+          <>
+            {isLogin && (
+              <Button
+                style={{
+                  position: "absolute",
+                  right: "20px",
+                  top: "100px",
+                  zIndex: 1000,
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                }}
+                height="2rem"
+                onClick={logout}>
+                Logout
+              </Button>
+            )}
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Navigate to={isLogin ? "/map" : "/home"} replace={true} />
+                }
+              />
+              {!isLogin && <Route path="/home" element={<Home />} />}
+              {isLogin && (
+                <>
+                  <Route path="/map" element={<Map />} />
+                  <Route path="/problem/:problemurl" element={<Problems />} />
+                </>
+              )}
+              <Route path="/rank" element={<Rank />} />
+              <Route
+                path="/error/:code"
+                element={<Error message="Page not found" />}
+              />
+              <Route
+                path="*"
+                element={<Navigate to="/error/404" replace={true} />}
+              />
+            </Routes>
+          </>
+        )}
       </Pages>
       {/* <div>
 				<DataLoading size={100} />

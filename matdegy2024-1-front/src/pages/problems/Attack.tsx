@@ -87,7 +87,7 @@ const Attack = () => {
         </>
       );
     }
-  }, [isCorrect]);
+  }, [isCorrect, msg]);
 
   return (
     <ProblemEachField>
