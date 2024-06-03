@@ -1,6 +1,16 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
-import { ProblemEachField, Text, Button, Alert } from "../../components";
+import {
+  ProblemEachField,
+  Text,
+  Button,
+  Alert,
+  AlertText,
+  AlertTitle,
+} from "../../components";
+import axios from "axios";
+import { DataLoading } from "../../utils/DataLoading";
+import { useNavigate } from "react-router-dom";
 
 const IQtest = () => {
   const [page, setPage] = useState(0);
@@ -46,7 +56,7 @@ const IQtest = () => {
     const currentB = parseInt(color.slice(5, 7), 16);
 
     const random = (current: number) => {
-      const rng = 16;
+      const rng = 24;
       const tmp = Math.floor(
         Math.random() * rng * 2 -
           rng +
@@ -65,7 +75,13 @@ const IQtest = () => {
       .padStart(2, "0")}${b.toString(16).padStart(2, "0")}`;
   };
 
-  const randomColorList = Array.from({ length: 10 }, () => randomColor());
+  const [randomColorList, setRandomColorList] = useState(
+    Array.from({ length: 10 }, () => randomColor())
+  );
+
+  useEffect(() => {
+    setRandomColorList(Array.from({ length: 10 }, () => randomColor()));
+  }, [color]);
 
   return (
     <ProblemEachField>
@@ -185,6 +201,80 @@ const AnswerPage = ({
   colorInv: string;
   setPage: (page: number) => void;
 }) => {
+  const navigate = useNavigate();
+  const [isCorrect, setIsCorrect] = useState<boolean | null | undefined>(null);
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [alertComponent, setAlertComponent] = useState<JSX.Element>(
+    <DataLoading />
+  );
+  const [msg, setMsg] = useState<string>("");
+
+  const [answer, setAnswer] = useState<string>("");
+
+  const checkAnswer = async () => {
+    setIsCorrect(null);
+    setShowAlert(true);
+    if (answerColorList.every((color, index) => color === colorList[index])) {
+      axios
+        .get("/api/submit/iqtest?answer=IQ_avg_is_100")
+        .then((res) => {
+          if (res.data.correct) {
+            setIsCorrect(true);
+            setMsg(res.data.message);
+          } else {
+            setIsCorrect(false);
+          }
+        })
+        .catch((res) => {
+          setIsCorrect(undefined);
+        });
+    } else {
+      setIsCorrect(false);
+    }
+  };
+  useEffect(() => {
+    if (isCorrect === null) {
+      setAlertComponent(<DataLoading />);
+    } else if (isCorrect === true) {
+      setAlertComponent(
+        <>
+          <AlertTitle
+            style={{
+              color: "var(--Green)",
+            }}>
+            Correct!
+          </AlertTitle>
+
+          <AlertText>{msg}</AlertText>
+          <Button
+            onClick={() => {
+              navigate("/map");
+            }}>
+            Next
+          </Button>
+        </>
+      );
+    } else if (isCorrect === false) {
+      setAlertComponent(
+        <>
+          <AlertTitle
+            style={{
+              color: "var(--Red)",
+            }}>
+            Incorrect!
+          </AlertTitle>
+          <Button onClick={() => setShowAlert(false)}>Close</Button>
+        </>
+      );
+    } else {
+      setAlertComponent(
+        <>
+          <AlertTitle style={{ color: "var(--Red)" }}>Error!</AlertTitle>
+          <Button onClick={() => setShowAlert(false)}>Close</Button>
+        </>
+      );
+    }
+  }, [isCorrect, msg]);
   const [answerColorList, setAnswerColorList] = useState<string[]>(colorList);
 
   useEffect(() => {
@@ -244,17 +334,10 @@ const AnswerPage = ({
         ))}
       </ColorListLayout>
       <Gap />
-      <Button
-        onClick={() => {
-          if (
-            answerColorList.every((color, index) => color === colorList[index])
-          ) {
-          } else {
-            alert("틀렸습니다.");
-          }
-        }}>
-        제출
-      </Button>
+      <Button onClick={checkAnswer}>제출</Button>
+      <Alert show={showAlert} id="probability">
+        {alertComponent}
+      </Alert>
     </PageLayout>
   );
 };

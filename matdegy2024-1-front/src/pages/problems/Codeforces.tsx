@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import Memo from "../../images/memo.png";
 
 const Codeforces = () => {
+  const navigate = useNavigate();
   const [isCorrect, setIsCorrect] = useState<boolean | null | undefined>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertComponent, setAlertComponent] = useState<JSX.Element>(
@@ -58,7 +59,12 @@ const Codeforces = () => {
           </AlertTitle>
 
           <AlertText>{msg}</AlertText>
-          <Button onClick={() => setShowAlert(false)}>Next</Button>
+          <Button
+            onClick={() => {
+              navigate("/map");
+            }}>
+            Next
+          </Button>
         </>
       );
     } else if (isCorrect === false) {
@@ -90,7 +96,8 @@ const Codeforces = () => {
         유림이는 동우네 집에서 흥미로운 무언가를 발견했다. <br />
         자세히 보려고 줍는 순간, 이것이 그만 찢어지고 말았다.
         <br /> 동우가 화내기 전에 유림이는 종이에 적힌 나머지 내용들을
-        알아내야만 한다!!
+        알아내야만 한다!! <br />
+        위의 그림은 유림이가 자신의 집에와 당시의 상황을 기억하여 그린 그림이다.
       </Text>
       <Text>
         이 문제는 <CodeforcesLink text="Codeforces 그룹" />

@@ -16,6 +16,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const Sponsorship = () => {
+  const navigate = useNavigate();
   const [isCorrect, setIsCorrect] = useState<boolean | null | undefined>(null);
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertComponent, setAlertComponent] = useState<JSX.Element>(
@@ -56,7 +57,7 @@ const Sponsorship = () => {
             Correct!
           </AlertTitle>
           <AlertText>{msg}</AlertText>
-          <Button onClick={() => setShowAlert(false)}>Next</Button>
+          <Button onClick={() => navigate("/map")}>Next</Button>
         </>
       );
     } else if (isCorrect === false) {

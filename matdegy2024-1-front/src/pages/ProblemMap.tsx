@@ -79,7 +79,7 @@ const Map = () => {
           <AlertText>{rmsg}</AlertText>
           <Button
             onClick={() => {
-              navigate("/map");
+              window.location.href = "/map";
               setShow(false);
             }}>
             Next
@@ -140,7 +140,7 @@ const Map = () => {
         Math.floor(Math.random() * (leftRange[1] - leftRange[0] + 1)) +
           leftRange[0]
       );
-    }, 3000);
+    }, 2000);
   }, [top]);
 
   useLayoutEffect(() => {

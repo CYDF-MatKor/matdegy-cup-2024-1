@@ -49,7 +49,12 @@ const Birthday = () => {
         <>
           <AlertTitle style={{ color: "var(--Green)" }}>Correct!</AlertTitle>
           <AlertText>{msg}</AlertText>
-          <Button onClick={() => navigate("/map")}>Next</Button>
+          <Button
+            onClick={() => {
+              navigate("/map");
+            }}>
+            Next
+          </Button>
         </>
       );
     } else if (isCorrect === false) {
